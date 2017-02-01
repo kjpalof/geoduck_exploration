@@ -12,11 +12,31 @@ library(FSA)
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
+weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) -> weight_pop
+
 # match area name, make sure both have year
 levels(dat$ADFG_Fishery.Area)
 levels(weight_pop$area)
 glimpse(dat)
 
+# this doesn't give 0's for missing ages...
+dat %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
+  summarise(n = n()) -> dat_hist
+  
+#histograms - no weightings by population size
+ggplot(dat, aes(x = Age_2012)) +geom_histogram(binwidth =1.5) #all together, no weighting
+ggplot(dat, aes(x=Age_2012)) + 
+  geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
+                 binwidth=1.5,
+                 colour="black", fill="white") +
+  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+
+ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
+  geom_histogram(binwidth=1.5, alpha=.5, position="identity")
+ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + geom_density(alpha=.3)
+  
+ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill="white") + 
+  facet_grid( ADFG_Fishery.Area~ .)
 
 # match area names to merge files.
 # Calculate weighting - compare to Mike's calc - see variable in file

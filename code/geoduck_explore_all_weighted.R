@@ -23,7 +23,7 @@ glimpse(dat)
 dat %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
   summarise(n = n()) -> dat_hist
   
-#histograms - no weightings by population size
+#histograms - no weightings by population size -------------
 ggplot(dat, aes(x = Age_2012)) +geom_histogram(binwidth =1.5) #all together, no weighting
 ggplot(dat, aes(x=Age_2012)) + 
   geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
@@ -37,6 +37,9 @@ ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + geom_density(alpha=.3)
   
 ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill="white") + 
   facet_grid( ADFG_Fishery.Area~ .)
+
+### histograms from weighted data??? how to do this
+dat_hist
 
 # match area names to merge files.
 # Calculate weighting - compare to Mike's calc - see variable in file

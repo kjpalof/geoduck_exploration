@@ -7,12 +7,14 @@ rm(list = ls()) # clear workspace since data frames have same names
 ## Load packages ------
 library(tidyverse)
 library(FSA)
+library(gridExtra)
 
 ## Load data -------
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
-weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) -> weight_pop
+weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
+  select (-area) %>% select(-AgeStudyWeighting)-> weight_pop
 
 # match area name, make sure both have year
 levels(dat$ADFG_Fishery.Area)
@@ -22,8 +24,10 @@ glimpse(dat)
 # this doesn't give 0's for missing ages...
 dat %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
   summarise(n = n()) -> dat_hist
-  
-#histograms - no weightings by population size -------------
+
+
+############################################  
+### histograms - no weightings by population size -------------
 ggplot(dat, aes(x = Age_2012)) +geom_histogram(binwidth =1.5) #all together, no weighting
 ggplot(dat, aes(x=Age_2012)) + 
   geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
@@ -45,8 +49,8 @@ ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill
 
 ### histograms from summarized data -------------------
 dat_hist
-ggplot(dat_hist, aes(x=Age_2012, y = n))  + 
-  geom_bar(stat = "identity", width =0.5) +geom_density()
+all <- ggplot(dat_hist, aes(x=Age_2012, y = n))  + 
+  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
 
 ggplot(dat_hist, aes(x=Age_2012, y = n, fill = ADFG_Fishery.Area))  + 
@@ -57,9 +61,19 @@ ggplot(dat_hist, aes(x=Age_2012, y = n, fill = ADFG_Fishery.Area))  +
   theme_minimal()
 
 
-
+#########################################
+#### weighing counts by area population ---------------------------
 # match area names to merge files.
 # Calculate weighting - compare to Mike's calc - see variable in file
-
+weight_pop
 # apply weighting to age frequencies
+dat_hist # n is counts of observations for each age in each area.
+dat_hist %>% left_join(weight_pop) -> dat_hist1
+dat_hist1 %>% mutate(n_wt = n*wt_each) -> dat_hist1
+wt_all <- ggplot(dat_hist1, aes(x=Age_2012, y = n_wt))  + 
+  geom_bar(stat = "identity", width =0.5)
+
+grid.arrange(all, wt_all, nrow=2)
+
+
 # perform catch curve analysis on data total and each area

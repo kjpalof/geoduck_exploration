@@ -38,27 +38,38 @@ write_csv(sumstats, 'output/raw_summary.csv')
 
 ############################################  
 ### histograms - no weightings by population size -------------
-ggplot(dat, aes(x = Age_2012)) +geom_histogram(binwidth =1.5) #all together, no weighting
+ggplot(dat, aes(x = Age_2012)) +geom_histogram(binwidth =1.0,colour="black", fill="white") #all together, no weighting
 ggplot(dat, aes(x=Age_2012)) + 
   geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
                  binwidth=1.0,
                  colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
 
+## all on same graph with density - weird ---------
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + 
   geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
                  binwidth=1.5) +
-  geom_density()  # Overlay with transparent density plot
+  geom_density(alpha=.2)  # Overlay with transparent density plot
 
-#with lines for means
+# areas by color ---------------
+ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
+  geom_histogram(binwidth=1.0, alpha=.75, position="identity")
+#with lines for means --------------
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
   geom_histogram(binwidth=1.0, alpha=.5, position="identity")+
   geom_vline(data = sumstats, aes(xintercept = mean, colour = ADFG_Fishery.Area), linetype = "dashed", size =1)
 
+# just density plots by area --------------
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + geom_density(alpha=.3)
-  
+# facet wrap by area  ------------
 ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill="white") + 
   facet_grid( ADFG_Fishery.Area~ .)
+
+## weighting in histogram???---------
+ggplot(dat_wt, aes(x = Age_2012, weight = wt_each)) +geom_histogram(binwidth =1.0,colour="black", fill="white") #all together - using weighting
+
+ggplot(dat_wt, aes(x=Age_2012, weight= wt_each, fill=ADFG_Fishery.Area)) +
+  geom_histogram(binwidth=1.0, alpha=.75, position="identity")
 
 ### bar graphs from summarized data -------------------
 dat_hist
@@ -99,7 +110,13 @@ ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) +
 ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) + 
   geom_density(alpha = 0.3) 
   
-
-
+head(dat_hist1)
+ggplot(dat_hist1, aes(x=Age_2012, y = n_wt, fill = otter.status))  + 
+  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
+# bar graph using otter status and wt counts
+##################################
+### log scale ---------
+dat_hist1 %>% 
+  mutate()
 
 # perform catch curve analysis on data total and each area

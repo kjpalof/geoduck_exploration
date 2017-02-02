@@ -25,6 +25,13 @@ glimpse(dat)
 dat %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
   summarise(n = n()) -> dat_hist
 
+## summary statistics raw ------------
+dat %>% group_by(ADFG_Fishery.Area) %>% 
+  summarise(min = min(Age_2012), mean = mean(Age_2012), median = median(Age_2012), max =max(Age_2012)) -> sumstats
+
+### save tables and figures if needed ------------------------------------
+write_csv(sumstats, 'output/raw_summary.csv')
+
 
 ############################################  
 ### histograms - no weightings by population size -------------
@@ -40,14 +47,17 @@ ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
                  binwidth=1.5) +
   geom_density()  # Overlay with transparent density plot
 
+#with lines for means
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
-  geom_histogram(binwidth=1.5, alpha=.5, position="identity")
+  geom_histogram(binwidth=1.0, alpha=.5, position="identity")+
+  geom_vline(data = sumstats, aes(xintercept = mean, colour = ADFG_Fishery.Area), linetype = "dashed", size =1)
+
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + geom_density(alpha=.3)
   
 ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill="white") + 
   facet_grid( ADFG_Fishery.Area~ .)
 
-### histograms from summarized data -------------------
+### bar graphs from summarized data -------------------
 dat_hist
 all <- ggplot(dat_hist, aes(x=Age_2012, y = n))  + 
   geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
@@ -74,6 +84,5 @@ wt_all <- ggplot(dat_hist1, aes(x=Age_2012, y = n_wt))  +
   geom_bar(stat = "identity", width =0.5)
 
 grid.arrange(all, wt_all, nrow=2)
-
 
 # perform catch curve analysis on data total and each area

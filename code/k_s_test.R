@@ -14,6 +14,7 @@ library(kSamples)
 ## Load data -------
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 
+### seperate data frames for areas raw data ----------
 dat %>%
   filter(Fishery.Area == "1_Cone Is.") -> cone_is
 dat %>%

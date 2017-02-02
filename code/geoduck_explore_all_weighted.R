@@ -21,6 +21,9 @@ levels(dat$ADFG_Fishery.Area)
 levels(weight_pop$area)
 glimpse(dat)
 
+dat %>% left_join(weight_pop) -> dat_wt
+
+### summarized by area / age-------------
 # this doesn't give 0's for missing ages...
 dat %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
   summarise(n = n()) -> dat_hist
@@ -84,5 +87,19 @@ wt_all <- ggplot(dat_hist1, aes(x=Age_2012, y = n_wt))  +
   geom_bar(stat = "identity", width =0.5)
 
 grid.arrange(all, wt_all, nrow=2)
+
+
+############################
+### sea otter -------------------
+head(dat_wt)
+
+ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) + 
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
+
+ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) + 
+  geom_density(alpha = 0.3) 
+  
+
+
 
 # perform catch curve analysis on data total and each area

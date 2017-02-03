@@ -44,20 +44,23 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
 head(dat2)
 head(dat_hist2) 
 
+# unweighted 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, position = "dodge") 
 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_density(alpha = 0.3) 
 
-ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + 
+#weighted 
+two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + 
   geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
 ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
   geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
+grid.arrange(one, two, nrow=2)
 ################ data sets by sea otter ---------------
 dat2 %>% filter(otter.status == "present") -> present_raw
 dat2 %>% filter(otter.status == "absent") -> absent_raw
@@ -70,15 +73,22 @@ dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Ag
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))
 
 wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n_wt, 
-           weighty = absent_wt$n_wt)
+           weighty = absent_wt$n_wt) # not significantly different
+ 
+t.test(x = present_raw$Age_2012, y = absent_raw$Age_2012) # are significantly different
+# which to use?????? ##
+# Mann - Whitney U test
 
-t.test(x = present_raw$Age_2012, y = absent_raw$Age_2012)
 
 ################# age Composition Differences -------------------------------------------
 #do this on raw unweighted data
 ks.test(present_raw$Age_2012, absent_raw$Age_2012) #reject null that the two are equal
 
-# need to do this with weighted data   
+# need to do this with weighted data  
+
+
+# Fisher's Exact test
+
   
 ################# growth -------------------------------------------
 # L-A, W-L, W-A traditional methods

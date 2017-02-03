@@ -76,11 +76,12 @@ t.test(x = present_raw$Age_2012, y = absent_raw$Age_2012)
 
 ################# age Composition Differences -------------------------------------------
 #do this on raw unweighted data
-
 ks.test(present_raw$Age_2012, absent_raw$Age_2012) #reject null that the two are equal
-  
+
+# need to do this with weighted data   
   
 ################# growth -------------------------------------------
 # L-A, W-L, W-A traditional methods
+# use FSA model package
 
 ################# Catch curve traditional -------------------------------------------

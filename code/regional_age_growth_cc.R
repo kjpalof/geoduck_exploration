@@ -26,7 +26,7 @@ weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(pop
 dat %>% left_join(weight_pop) -> dat2 # raw data
 # summarized by area, age with weigthing
 dat2 %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
-  summarise(n = n()) -> dat2_by.area
+  summarise(n = n())  -> dat2_by.area
 dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area # counts by age/area with weighting
 
 ## weighting counts 
@@ -67,6 +67,8 @@ dat2 %>% filter(otter.status == "absent") -> absent_raw
 dat_wt_by.area2 %>% filter(otter.status == "present") -> present_wt
 dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 
+present_wt %>% group_by(otter.status, Age_2012) %>% summarise (count = n())
+
 ################# mean Age -------------------------------------------
 # use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt))
@@ -76,6 +78,10 @@ wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n
            weighty = absent_wt$n_wt) # not significantly different
  
 t.test(x = present_raw$Age_2012, y = absent_raw$Age_2012) # are significantly different
+wilcox.test(x = present_raw$Age_2012, y = absent_raw$Age_2012)
+wilcox.test(dat2$Age_2012 ~ dat2$otter.status)
+
+kruskal.test(dat2$Age_2012 ~ dat2$otter.status)
 # which to use?????? ##
 # Mann - Whitney U test
 
@@ -83,6 +89,8 @@ t.test(x = present_raw$Age_2012, y = absent_raw$Age_2012) # are significantly di
 ################# age Composition Differences -------------------------------------------
 #do this on raw unweighted data
 ks.test(present_raw$Age_2012, absent_raw$Age_2012) #reject null that the two are equal
+
+# bin data for ks-test
 
 # need to do this with weighted data  
 

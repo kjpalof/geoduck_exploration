@@ -71,6 +71,9 @@ ggplot(dat2, aes(x = Age_2012, weight = wt_each)) +geom_histogram(binwidth =1.0,
 ggplot(dat2, aes(x=Age_2012, weight= wt_each, fill=ADFG_Fishery.Area)) +
   geom_histogram(binwidth=1.0, alpha=.75, position="identity")
 
+ggplot(dat2, aes(x=Age_2012, weight= wt_each, fill=ADFG_Fishery.Area)) +
+  geom_density(alpha=.35)
+
 ### bar graphs from summarized data -------------------
 dat2_by.area
 all <- ggplot(dat2_by.area, aes(x=Age_2012, y = n))  + 

@@ -123,9 +123,6 @@ two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
 #ggplot(all.n.cort.sum, aes(x=x, y = n, fill = z))  + ylab("weighted counts")+
 #  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
-  geom_histogram(binwidth = 1.0, position = "dodge") 
-
 # density of ages in each group
 png('./figures/hist_density_corrected.png')
 ggplot(all_n_corrected, aes(x=x, fill=z)) + 

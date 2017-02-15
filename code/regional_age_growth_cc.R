@@ -17,6 +17,7 @@ library(weights)
 library(nlstools)
 library(AICcmodavg)
 library(ggplot2)
+library(scales)
 options(scipen=9999) # remove scientific notation
 theme_set(theme_bw()+ 
             theme(panel.grid.major = element_blank(),
@@ -61,15 +62,13 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
   geom_density(alpha = 0.3) 
 
 #weighted 
-two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + ylab("weighted counts")+
-  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
+#two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + ylab("weighted counts")+
+#  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
-ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
-  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
+#ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
+#  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
-png('./figures/histogram_count_both.png')
-grid.arrange(one, two, nrow=2)
-dev.off()
+
 ################ data sets by sea otter ---------------
 dat2 %>% filter(otter.status == "present") -> present_raw
 dat2 %>% filter(otter.status == "absent") -> absent_raw
@@ -104,7 +103,38 @@ ks.test(present_raw$Age_2012, absent_raw$Age_2012) #reject null that the two are
 # bin data for ks-test
 
 # need to do this with weighted data  
-head(present_wt %>% as.data.frame())
+head(present_wt %>% as.data.frame()) # need to take n_corrected here and expand it
+# corrected counts based on weight for sea otter present (ee) and absent (ff)
+ee <- data.frame(x = rep(present_wt$Age_2012, present_wt$n_corrected), z = rep(present_wt$otter.status, present_wt$n_corrected))
+
+ff <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z = rep(absent_wt$otter.status, absent_wt$n_corrected))
+
+ks.test(ee$x, ff$x) # reject null that two are equal
+
+ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
+# weighted histograms
+two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
+  geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge")+ylab("expanded count (x10000s)")+
+  xlab("Age_2012")+
+  scale_y_continuous(breaks = c(50000, 100000), labels = c(5,10))
+
+### test and reason why I don't want to use the bar graphs
+#all_n_corrected %>% group_by(z, x) %>% summarise (n = n()) -> all.n.cort.sum
+#ggplot(all.n.cort.sum, aes(x=x, y = n, fill = z))  + ylab("weighted counts")+
+#  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
+
+ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+  geom_histogram(binwidth = 1.0, position = "dodge") 
+
+# density of ages in each group
+png('./figures/hist_density_corrected.png')
+ggplot(all_n_corrected, aes(x=x, fill=z)) + 
+  geom_density(alpha = 0.3) 
+dev.off()
+
+png('./figures/histogram_count_both.png')
+grid.arrange(one, two, nrow=2)
+dev.off()
 
 # Fisher's Exact test
 

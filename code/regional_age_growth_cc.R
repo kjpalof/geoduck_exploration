@@ -37,7 +37,7 @@ dat2 %>% group_by(ADFG_Fishery.Area, Age_2012) %>%
 dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area # counts by age/area with weighting
 
 ## weighting counts 
-dat %>% group_by(ADFG_Fishery.Area) %>% summarise(N_samp = n()) ->total.n.area
+dat %>% group_by(ADFG_Fishery.Area) %>% summarise(N_samp = n()) ->total.n.area  # number sampled in each area
 dat_wt_by.area %>% left_join(total.n.area) %>% 
   mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
 # n_corrected is counts using population size weighting.  n_wt is proportion using same weighting
@@ -80,9 +80,11 @@ present_wt %>% group_by(otter.status, Age_2012) %>% summarise (count = n())
 
 ################# mean Age -------------------------------------------
 # use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
-dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt))
-dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))
 
+dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt))
+# mean weighted by the weighted count (n_wt = n*wt_each)
+dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))
+# mean weighted by the corrected n (proportion of each age applied to population size)
 wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n_wt, 
            weighty = absent_wt$n_wt) # not significantly different
  
@@ -102,7 +104,7 @@ ks.test(present_raw$Age_2012, absent_raw$Age_2012) #reject null that the two are
 # bin data for ks-test
 
 # need to do this with weighted data  
-
+head(present_wt %>% as.data.frame())
 
 # Fisher's Exact test
 

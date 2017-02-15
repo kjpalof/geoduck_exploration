@@ -51,6 +51,10 @@ dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 Histogram by group - with raw counts and counts weighted by population size
 ![](../figures/histogram_count_both.png)
 
+Kernal density histogram by groups
+
+![](../figures/hist_density_corrected.png)
+
 ###Mean age by group 
 ```{r}
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt)) %>% 
@@ -67,8 +71,17 @@ wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n
 ```
 
 ## Age Composition Similar?
+More exploration is neeeded for this analysis but a simple ks test suggests they are not from the same distribution. Code ee is present and ff is absent.
 
+```{r}
+ee <- data.frame(x = rep(present_wt$Age_2012, present_wt$n_corrected), z = rep(present_wt$otter.status, present_wt$n_corrected))
 
+ff <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z = rep(absent_wt$otter.status, absent_wt$n_corrected))
+
+ks.test(ee$x, ff$x) # reject null that two are equal
+
+ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
+```
 
 ## Growth
 ### VBL Length - Age

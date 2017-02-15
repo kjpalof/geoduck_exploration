@@ -1,0 +1,26 @@
+---
+title: "Regional geoduck age and growth"
+author: "Katie Palof"
+date: "February 16, 2017"
+output: html_document
+---
+```{r, echo=FALSE, message=FALSE, warning=F}
+library(knitr)
+library(tidyverse)
+options(scipen=9999) # remove scientific notation
+
+knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
+```
+## Regional groupings
+Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters.  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud).  For purposes of this document Group 1 will be referred to as the "absent" group and Group 2 will be "present".  (we can change this later if needed - this is just a draft)
+
+## Age Frequency
+Histograms - unweighted
+
+Histrograms - weigthed by populations size
+
+## Age Composition Similar?
+
+## Growth
+### VBL Length - Age
+![](../figures/present_VBL1.png)

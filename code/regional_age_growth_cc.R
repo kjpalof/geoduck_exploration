@@ -244,28 +244,29 @@ sv.francis
 # Francis parameterization
 ages <- c(9,95)
 vbFrancis <-vbFuns("Francis")
-fitFrancis <- nls()
+fitFrancis <- nls(Valve.Length.mm ~vbFrancis(Age_2012, L1, L2, L3, t1 = ages[1], t3=ages[2]), 
+                  data = present_raw, start = sv.francis)
+overview(fitFrancis)
+
 
 #################################################################
 ## weight - length --------------------------------------
-GD14growth_WL <- completeFun (GD14growth_L, "Valve.Weight.g")
-str(GD14growth_WL)
-summary(GD14growth_WL)
-# made new input file that removes any missing values from either length 
-#   or weight. 
+present_rawL
+# input file for whole clam weight 
+present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
+# input file for valve weight - removes blanks in these for analysis 
+present_rawL %>% filter(!is.na (Valve.Weight.g)) -> present_rawWL_valve
 
 # using Length - Weight relationship to estimate Beta
-#weight-length models 
 ### used to get an estimate of beta parameter for weight-age relationship
 ############
-################### Area 1 ####################
-GD14growth_WL1 <- subset(GD14growth_WL, Discrete.Sample.ID=="14DS~1")
+################### Weight - Length (present) ####################
+# valve length
+plot(Valve.Weight.g~Valve.Length.mm, data=present_rawWL_valve)
 
-plot(Valve.Weight.g~Valve.Length.mm, data=GD14growth_WL1)
-length(GD14growth_WL1$Valve.Weight.g)
 # additive error structure, non-linear fit
 wlallo <- Valve.Weight.g ~ (A)*(Valve.Length.mm^B)
-fit <- nls(wlallo, data=GD14growth_WL1, start=list(A=0.01, B=1.8))
+fit <- nls(wlallo, data=present_rawWL_valve, start=list(A=0.01, B=1.8))#A=0.01, B=1.8
 
 fitPlot(fit, xlab="Valve Length", ylab="Valve Weight (g)", main="", col.mdl="red")
 fit
@@ -273,17 +274,18 @@ summary(fit)
 overview(fit)
 
 ## plotting ##############################################
-plot(Valve.Weight.g~Valve.Length.mm,data=GD14growth_WL1,ylab="Valve Weight, g",xlab=" Valve Length, mm", pch=19, ylim=c(0,300), xlim=c(0,220), main="2014 Area 1")
+png('./figures/present_valveweight_length.png')
+plot(Valve.Weight.g~Valve.Length.mm,data=present_rawWL_valve,ylab="Valve Weight, g",xlab=" Valve Length, mm", pch=19, ylim=c(0,300), xlim=c(0,220), main="Group 2 sea otter present")
 
 length2plot <- 0:220
 pred <- numeric(length(length2plot))
 for(i in 1:length(length2plot)){
-  pr<- 0.02452*((length2plot[i])^1.71643)
+  pr<- coef1[1]*((length2plot[i])^coef1[2])
   pred[i] <- pr
 }
 #adds fitted line
 lines(pred~length2plot, type="l", col="red", lwd=3, lty=2)
-
+dev.off()
 
 ############## Checking for model assumptions
 # using additive error structure
@@ -295,7 +297,10 @@ hist(residuals(fit), main = "")
 # assumption of normality is met if this histogram is symmetric without overly long "tails"
 ##    Not right skewed do not need to change to multiplicative.
 
-plot(resid(fit)~Valve.Length.mm, data=GD14growth_WL1)#look for normality assumptions
+plot(resid(fit)~Valve.Length.mm, data=present_rawWL_valve)#look for normality assumptions
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
+
+
+
 ################# Catch curve traditional -------------------------------------------

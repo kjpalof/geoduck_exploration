@@ -86,3 +86,18 @@ ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data
 ## Growth
 ### VBL Length - Age
 ![](../figures/present_VBL1.png)
+
+
+### Weight - Length relationship
+Using allometric growth model (Quinn and Deriso 1999)
+
+#### Valve weight - length 
+Group 2 - sea otter present
+
+![](../figures/present_valveweight_length.png)
+
+#### Whole clam weight - length 
+Group 2 - sea otter present
+
+![](../figures/present_wholeclamweight_length.png)
+

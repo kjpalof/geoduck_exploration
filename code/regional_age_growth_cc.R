@@ -17,6 +17,10 @@ library(weights)
 library(nlstools)
 library(AICcmodavg)
 library(ggplot2)
+options(scipen=9999) # remove scientific notation
+theme_set(theme_bw()+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
 
 ## Load data -------------------------------------------------------
 dat <- read.csv("./data/12_14_geoduck_all.csv")
@@ -57,13 +61,15 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
   geom_density(alpha = 0.3) 
 
 #weighted 
-two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + 
+two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + ylab("weighted counts")+
   geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
 ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
   geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
+png('./figures/histogram_count_both.png')
 grid.arrange(one, two, nrow=2)
+dev.off()
 ################ data sets by sea otter ---------------
 dat2 %>% filter(otter.status == "present") -> present_raw
 dat2 %>% filter(otter.status == "absent") -> absent_raw

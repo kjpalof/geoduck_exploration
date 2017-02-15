@@ -173,7 +173,9 @@ ests <-boot2$coefboot
 ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
-fitPlot(fit2, xlab="Age", ylab="Valve Length (mm)", xlim=range(ages2plot), main="")
+
+png('./figures/present_VBL1.png')
+fitPlot(fit2, xlab="Age (2012)", ylab="Valve Length (mm)", xlim=range(ages2plot), main="Regional Group 2 - sea otter present")
 LCI <- UCI <- LPI <- UPI <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- ests[,"Linf"]*(1-exp(-ests[,"K"]*(ages2plot[i])))
@@ -182,16 +184,83 @@ for(i in 1:length(ages2plot)){
   LPI[i] <- quantile(pv - boot2$rse, 0.025)
   UPI[i] <- quantile(pv + boot2$rse, 0.975)
 }
-lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
+#lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
+#lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 lines(UPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
 lines(LPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+dev.off()
+#ggsave("./figures/present_VBL.png", dpi=300, height=4.5, width=6.5, units="in")
+
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
+### save this graph for RMD ---------------
 
 ## other parametrization ----------
 # Galucci and Quinn 1979
 # Schnute (Quinn II and Deriso 1999)
 
+# p.18
+sv.schnute <- vbStarts(Valve.Length.mm~Age_2012, data=present_raw, type = "Schnute")
+sv.galqu <- vbStarts(Valve.Length.mm~Age_2012, data=present_raw, type = "GallucciQuinn")
+sv.francis <- vbStarts(Valve.Length.mm~Age_2012, data=present_raw, type = "Francis", tFrancis = c(9,95))
+sv.galqu
+sv.schnute
+sv.francis
+
+# Francis parameterization
+ages <- c(9,95)
+vbFrancis <-vbFuns("Francis")
+fitFrancis <- nls()
+
+#################################################################
+## weight - length --------------------------------------
+GD14growth_WL <- completeFun (GD14growth_L, "Valve.Weight.g")
+str(GD14growth_WL)
+summary(GD14growth_WL)
+# made new input file that removes any missing values from either length 
+#   or weight. 
+
+# using Length - Weight relationship to estimate Beta
+#weight-length models 
+### used to get an estimate of beta parameter for weight-age relationship
+############
+################### Area 1 ####################
+GD14growth_WL1 <- subset(GD14growth_WL, Discrete.Sample.ID=="14DS~1")
+
+plot(Valve.Weight.g~Valve.Length.mm, data=GD14growth_WL1)
+length(GD14growth_WL1$Valve.Weight.g)
+# additive error structure, non-linear fit
+wlallo <- Valve.Weight.g ~ (A)*(Valve.Length.mm^B)
+fit <- nls(wlallo, data=GD14growth_WL1, start=list(A=0.01, B=1.8))
+
+fitPlot(fit, xlab="Valve Length", ylab="Valve Weight (g)", main="", col.mdl="red")
+fit
+summary(fit)
+overview(fit)
+
+## plotting ##############################################
+plot(Valve.Weight.g~Valve.Length.mm,data=GD14growth_WL1,ylab="Valve Weight, g",xlab=" Valve Length, mm", pch=19, ylim=c(0,300), xlim=c(0,220), main="2014 Area 1")
+
+length2plot <- 0:220
+pred <- numeric(length(length2plot))
+for(i in 1:length(length2plot)){
+  pr<- 0.02452*((length2plot[i])^1.71643)
+  pred[i] <- pr
+}
+#adds fitted line
+lines(pred~length2plot, type="l", col="red", lwd=3, lty=2)
 
 
+############## Checking for model assumptions
+# using additive error structure
+residPlot(fit)
+par(mfrow=c(1,1))
+#"funneling" from left to right suggests that the variability about the model
+##  fairly constant
+hist(residuals(fit), main = "")
+# assumption of normality is met if this histogram is symmetric without overly long "tails"
+##    Not right skewed do not need to change to multiplicative.
+
+plot(resid(fit)~Valve.Length.mm, data=GD14growth_WL1)#look for normality assumptions
+#appears that residuals do not have a pattern with age
+# additive error structure appears appropriate
 ################# Catch curve traditional -------------------------------------------

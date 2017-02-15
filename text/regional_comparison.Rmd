@@ -7,6 +7,12 @@ output: html_document
 ```{r, echo=FALSE, message=FALSE, warning=F}
 library(knitr)
 library(tidyverse)
+library(FSA)
+library(gridExtra)
+library(weights)
+library(nlstools)
+library(AICcmodavg)
+library(ggplot2)
 options(scipen=9999) # remove scientific notation
 
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
@@ -34,25 +40,35 @@ dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by
 dat %>% group_by(ADFG_Fishery.Area) %>% summarise(N_samp = n()) ->total.n.area  # number sampled in each area
 dat_wt_by.area %>% left_join(total.n.area) %>% 
   mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
+################ data sets by sea otter ---------------
+dat2 %>% filter(otter.status == "present") -> present_raw
+dat2 %>% filter(otter.status == "absent") -> absent_raw
+dat_wt_by.area2 %>% filter(otter.status == "present") -> present_wt
+dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 ```  
 
 ## Age Frequency
 Histogram by group - with raw counts and counts weighted by population size
 ![](../figures/histogram_count_both.png)
 
-Mean age by group (with weighting)
+###Mean age by group 
 ```{r}
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt)) %>% 
-  kable(caption = "weighted mean")
+  kable(caption = "Weighted Mean")
 
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n)) %>% 
-  kable(caption = "mean of raw counts")
+  kable(caption = "Mean of Raw Counts")
 ```
 
-
-Histrograms - weigthed by populations size
+The weighted mean is used for comparisons between the groups since it takes into account the proportion of inviduals we sampled for ages compared to the population size.  
+```{r}
+wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n_wt, 
+           weighty = absent_wt$n_wt) # not significantly different
+```
 
 ## Age Composition Similar?
+
+
 
 ## Growth
 ### VBL Length - Age

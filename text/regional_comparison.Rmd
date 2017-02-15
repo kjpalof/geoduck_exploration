@@ -16,11 +16,39 @@ Housekeeping/ long-term: code is in geoduck_exploration R project. see regional_
 ## Regional groupings
 Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters.  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud).  For purposes of this document Group 1 will be referred to as the "absent" group and Group 2 will be "present".  (we can change this later if needed - this is just a draft)
 
+```{r}
+dat <- read.csv("../data/12_14_geoduck_all.csv")
+weight_pop <- read.csv("../data/GeoduckAgeStudyWeighting.csv")
+
+weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
+  select (-area) %>% select(-AgeStudyWeighting)-> weight_pop
+
+# full data set with weigtings
+dat %>% left_join(weight_pop) -> dat2 # raw data
+# summarized by area, age with weigthing
+dat2 %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
+  summarise(n = n())  -> dat2_by.area
+dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area # counts by age/area with weighting
+
+## weighting counts 
+dat %>% group_by(ADFG_Fishery.Area) %>% summarise(N_samp = n()) ->total.n.area  # number sampled in each area
+dat_wt_by.area %>% left_join(total.n.area) %>% 
+  mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
+```  
+
 ## Age Frequency
 Histogram by group - with raw counts and counts weighted by population size
 ![](../figures/histogram_count_both.png)
 
-Histograms - unweighted
+Mean age by group (with weighting)
+```{r}
+dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt)) %>% 
+  kable(caption = "weighted mean")
+
+dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n)) %>% 
+  kable(caption = "mean of raw counts")
+```
+
 
 Histrograms - weigthed by populations size
 

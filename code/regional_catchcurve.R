@@ -59,6 +59,7 @@ ggplot(all_n_corrected, aes(x=x, fill = z))+
   xlab("Age_2012")+
   scale_y_continuous(breaks = c(50000, 100000), labels = c(5,10))
 
+## Need to use the new method to report catch curve analysis and estimates.
 
 #### data prep PRESENT ------------------- 
 # want count by age for each group 
@@ -133,50 +134,50 @@ plot(fitCC4a)
 head(absent_wt) # Age_2012 and n (unweighted age counts) or n_corrected (weighted age counts)
 
 absent_wt %>% group_by(otter.status, Age_2012) %>% summarise( count = sum(n), Wcount = sum(n_corrected)) -> absent_freq
-present_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> present_freq
+absent_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> absent_freq
 
-present_freq %>% select(otter.status,Age_2012, logcount, logWcount ) %>% 
-  gather( key, value, -otter.status, -Age_2012) ->attempt1
+absent_freq %>% select(otter.status,Age_2012, logcount, logWcount ) %>% 
+  gather( key, value, -otter.status, -Age_2012) ->attempt2
 
-ggplot(attempt1, aes(Age_2012, value, colour = key)) +geom_point()
+ggplot(attempt2, aes(Age_2012, value, colour = key)) +geom_point()
 
-ggplot(present_freq, aes(Age_2012, logWcount)) +geom_point()
-ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
+ggplot(absent_freq, aes(Age_2012, logWcount)) +geom_point()
+ggplot(absent_freq, aes(Age_2012, Wcount)) +geom_point()
 
 # Are there any zero observations, if so remove them
-present_freq$Wcount == 0
+absent_freq$Wcount == 0
 
 # plot just the right hand tail
-str(agefreq2)
-plot(logWcount[60:92]~Age_2012[60:92],data=present_freq,main ="Present group,  just 'peak' to right tail, samples > 0", xlab = "Age", ylab="ln(frequency)",pch=19)
+absent_freq$logWcount
+plot(logWcount[38:83]~Age_2012[38:83],data=absent_freq,main ="absent group,  just 'peak' to right tail, samples > 0", xlab = "Age", ylab="ln(frequency)",pch=19)
 
-## Catch curve models - present group ----------------------------------
+## Catch curve models - absent group ----------------------------------
 #catch-curve models here using catchCurve function - can tell the function
-max(present_freq$Wcount)
-fitCC1 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:85) 
-#max count age (63) to the first age with no obsrevations - 86
+max(absent_freq$Wcount)
+fitCC1 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:76) 
+#max count age (50) to the first age with no obsrevations - 77
 
 summary(fitCC1)
 confint(fitCC1)
 plot(fitCC1)
 
-fitCC2 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:89) 
+fitCC2 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=50:96) 
 #need to use raw data for this.  it transforms the frequencies, 
-#89 is last observation >1
+#96 is last observation >1
 summary(fitCC2)
 confint(fitCC2)
 plot(fitCC2)
 
 # use first "peak"
 ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
-fitCC3 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:85)
+fitCC3 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:76)
 #need to use raw data for this.  it transforms the frequencies
 #26 is the first peak in count data
 summary(fitCC3)
 confint(fitCC3)
 plot(fitCC3)
 
-fitCC4 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:89) 
+fitCC4 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:96) 
 #need to use raw data for this.  it transforms the frequencies
 # no truncation at the end.
 summary(fitCC4)
@@ -184,13 +185,13 @@ confint(fitCC4)
 plot(fitCC4)
 
 # No truncation
-fitCC2a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:112) 
+fitCC2a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=50:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC2a)
 confint(fitCC2a)
 plot(fitCC2a)
 # No truncation
-fitCC4a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:112) 
+fitCC4a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC4a)
 confint(fitCC4a)

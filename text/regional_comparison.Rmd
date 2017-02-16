@@ -102,8 +102,25 @@ Using allometric growth model (Quinn and Deriso 1999)
 
 #### Valve weight - length 
 Group 2 - sea otter present
+Coefficients estimated from this relationship were A = 0.00015 and B = 2.71.
+
 
 ![](../figures/present_valveweight_length.png)
+
+#### Whole clam weight - length 
+Group 2 - sea otter present
+Coefficients estimated from this relationship were A = 0.00411 and B = 2.53.
+
+![](../figures/present_wholeclamweight_length.png)
+
+
+### Weight - Age relationship
+
+#### Valve Weight - Age relationship 
+Group 2 - sea otter present
+
+![](../figures/present_valveWlength.png)
+
 
 ```{r}
 present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
@@ -116,9 +133,4 @@ fit_WvalB <- nls(vbTypical_WVB, data=present_rawWL_valve, start= list(Winf=150, 
 summary(fit_WvalB) ## need to save this for .RMD
 
 ```
-
-#### Whole clam weight - length 
-Group 2 - sea otter present
-
-![](../figures/present_wholeclamweight_length.png)
 

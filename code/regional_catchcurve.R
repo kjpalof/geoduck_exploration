@@ -67,6 +67,7 @@ head(present_wt) # Age_2012 and n (unweighted age counts) or n_corrected (weight
 
 present_wt %>% group_by(otter.status, Age_2012) %>% summarise( count = sum(n), Wcount = sum(n_corrected)) -> present_freq
 present_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> present_freq
+write_csv(present_freq, 'output/present_freq.csv')
 
 present_freq %>% select(otter.status,Age_2012, logcount, logWcount ) %>% 
   gather( key, value, -otter.status, -Age_2012) ->attempt1
@@ -98,7 +99,7 @@ fitCC2 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:89)
 #89 is last observation >1
 summary(fitCC2)
 confint(fitCC2)
-plot(fitCC2)
+plot(fitCC2, main = "present")
 
 # use first "peak"
 ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
@@ -135,7 +136,7 @@ head(absent_wt) # Age_2012 and n (unweighted age counts) or n_corrected (weighte
 
 absent_wt %>% group_by(otter.status, Age_2012) %>% summarise( count = sum(n), Wcount = sum(n_corrected)) -> absent_freq
 absent_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> absent_freq
-
+write_csv(absent_freq, 'output/absent_freq.csv')
 absent_freq %>% select(otter.status,Age_2012, logcount, logWcount ) %>% 
   gather( key, value, -otter.status, -Age_2012) ->attempt2
 
@@ -161,23 +162,23 @@ summary(fitCC1)
 confint(fitCC1)
 plot(fitCC1)
 
-fitCC2 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=50:96) 
+fitCC2 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:96) 
 #need to use raw data for this.  it transforms the frequencies, 
 #96 is last observation >1
 summary(fitCC2)
 confint(fitCC2)
-plot(fitCC2)
+plot(fitCC2, main = "absent")
 
 # use first "peak"
-ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
-fitCC3 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:76)
+ggplot(absent_freq, aes(Age_2012, Wcount)) +geom_point()
+fitCC3 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:76)
 #need to use raw data for this.  it transforms the frequencies
 #26 is the first peak in count data
 summary(fitCC3)
 confint(fitCC3)
 plot(fitCC3)
 
-fitCC4 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:96) 
+fitCC4 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:96) 
 #need to use raw data for this.  it transforms the frequencies
 # no truncation at the end.
 summary(fitCC4)
@@ -185,13 +186,13 @@ confint(fitCC4)
 plot(fitCC4)
 
 # No truncation
-fitCC2a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=50:102) 
+fitCC2a <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC2a)
 confint(fitCC2a)
 plot(fitCC2a)
 # No truncation
-fitCC4a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:102) 
+fitCC4a <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC4a)
 confint(fitCC4a)

@@ -51,7 +51,7 @@ dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 Histogram by group - with raw counts and counts weighted by population size
 ![](../figures/histogram_count_both.png)
 
-Kernal density histogram by groups
+Kernal density of weighted expanded counts by groups
 
 ![](../figures/hist_density_corrected.png)
 

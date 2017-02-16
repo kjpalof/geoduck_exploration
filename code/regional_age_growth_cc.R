@@ -204,7 +204,7 @@ boot2 <-nlsBoot(fit2, niter=1000)
 confint(boot2, plot=TRUE)
 
 ests <-boot2$coefboot
-### plots of fit and bootstrap CIs
+### plots of fit and bootstrap CIs ----------------
 ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
@@ -343,8 +343,8 @@ plot(resid(fit_WC)~Valve.Length.mm, data=present_rawWL_whole)#look for normality
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
 
-#####WEIGHT ####### WEIGHT
-# using weight - age relationship ------------
+#####WEIGHT - Age ------------------------------
+# using weight - age relationship
 #### valve weight - age ------------------------------
 present_rawWL_valve %>% filter(is.na(Age_2012)) # check for ones without ages.
 
@@ -375,40 +375,32 @@ fit_WvalB
 summary(fit_WvalB) ## need to save this for .RMD
 overview(fit_WvalB)# output from the fitted object
 
-#####Bootstrap##############
-###########Bootstrap###############
-bootTypical_W <-nlsBoot(fitTypical_WB, niter=1000)
-confint(bootTypical_W, plot=TRUE)
+###########Bootstrap ----------------
+boot_WvalB <-nlsBoot(fit_WvalB, niter=1000)
+confint(boot_WvalB, plot=TRUE)
 
-estsW1 <-bootTypical_W$coefboot
+estsWVp <-boot_WvalB$coefboot
 ### plots of fit and bootstrap CIs
 ages2plot <- 0:120
+#lengths2plot <- 0:204
 
 par(mfrow=c(1,1))
-fitPlot(fitTypical_WB, xlab="Age", ylab="Valve Weight (g)",xlim=range(ages2plot),main="")
-LCI <- UCI <- numeric(length(ages2plot))
-for(i in 1:length(ages2plot)){
-  pv <- estsW1[,"Winf"]*(1-exp(-estsW1[,"K"]*(ages2plot[i])))^1.72
-  LCI[i] <-quantile(pv, 0.025)
-  UCI[i] <-quantile(pv,0.975)
-}
-lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 
-#### plot for comparisons and document
-plot(Valve.Weight.g~Age,data=GD14growth_W1,ylab="Valve Weight (g)",pch=19, ylim=c(0,300), xlim=c(0,120), main="2014 Area 1 Vegas/Hotspur")
-#adds lines from above bootstrap
-lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2) 
-
-predW <- numeric(length(ages2plot))
+png('./figures/present_valveWlength.png')
+fitPlot(fit_WvalB, xlab="Age (2012)", ylab="Valve Weight (g)",xlim=range(ages2plot),main=" Group 2 present")
+LCIwv <- UCIwv <- LPIwv <- UPIwv <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
-  pr<- (172.28764*(1-exp(-0.02649*(ages2plot[i])))^1.72)
-  predW[i] <- pr
+  pv <- estsWVp[,"Winf"]*(1-exp(-estsWVp[,"K"]*(ages2plot[i])))^2.71
+  LCIwv[i] <-quantile(pv, 0.025)
+  UCIwv[i] <-quantile(pv,0.975)
+  LPIwv[i] <- quantile(pv - boot_WvalB$rse, 0.025)
+  UPIwv[i] <- quantile(pv + boot_WvalB$rse, 0.975)
 }
-#adds fitted line
-lines(predW~ages2plot, type="l", col="red", lwd=2, lty=1)
-###
-###############
+#lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
+#lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
+lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+dev.off()
+
 
 ################# Catch curve traditional -------------------------------------------

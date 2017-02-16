@@ -134,3 +134,15 @@ summary(fit_WvalB) ## need to save this for .RMD
 
 ```
 
+## Catch Curve
+Traditional catch curve methods were not useful for these groupings due to large numbers of high ages.  Traditional methods estimated Z to be 0.01 or less, which is unlikely.  
+
+The Schnute 2007 was preliminarily examined for each group, preliminary results (which need to undergo sensitivity analysises) of average Z and the figure for the best model are presented below.  
+
+**Group 1 - Absent**
+
+Average Z (raw counts)= 0.045               Average Z (weighted counts)= 0.038
+
+**Group 2 - Present**
+
+Average Z (raw counts)= 0.037               Average Z (weighted counts)= 

@@ -87,6 +87,15 @@ ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data
 ### VBL Length - Age
 ![](../figures/present_VBL1.png)
 
+```{r}
+present_raw %>% filter(!is.na (Valve.Length.mm)) -> present_rawL # needed to remove rows without length measurements
+#fit model setting t0=0 
+vbTypical.t0 <- Valve.Length.mm~(Linf*(1-exp(-K*(Age_2012)))) # the equation to fit
+fit2 <- nls(vbTypical.t0, data=present_rawL, start= list(Linf=142, K=0.58))
+summary(fit2)
+
+```
+
 
 ### Weight - Length relationship
 Using allometric growth model (Quinn and Deriso 1999)
@@ -95,6 +104,18 @@ Using allometric growth model (Quinn and Deriso 1999)
 Group 2 - sea otter present
 
 ![](../figures/present_valveweight_length.png)
+
+```{r}
+present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
+# input file for valve weight - removes blanks in these for analysis 
+present_rawL %>% filter(!is.na (Valve.Weight.g)) -> present_rawWL_valve
+
+#fit with t0=0, and B from W-L relationship B=2.71
+vbTypical_WVB <- Valve.Weight.g~(Winf*(1-exp(-K*(Age_2012)))^2.71)
+fit_WvalB <- nls(vbTypical_WVB, data=present_rawWL_valve, start= list(Winf=150, K=0.05))
+summary(fit_WvalB) ## need to save this for .RMD
+
+```
 
 #### Whole clam weight - length 
 Group 2 - sea otter present

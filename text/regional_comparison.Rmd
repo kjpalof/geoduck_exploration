@@ -85,6 +85,18 @@ ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data
 
 ## Growth
 ### VBL Length - Age
+![](../figures/absent_VBL1.png)
+
+```{r}
+absent_raw %>% filter(!is.na (Valve.Length.mm)) -> absent_rawL # needed to remove rows without length measurements
+#fit model setting t0=0 
+vbTypical.t0 <- Valve.Length.mm~(Linf*(1-exp(-K*(Age_2012)))) # the equation to fit
+fit2a <- nls(vbTypical.t0, data=absent_rawL, start= list(Linf=131, K=0.44))
+summary(fit2a)
+
+```
+
+
 ![](../figures/present_VBL1.png)
 
 ```{r}
@@ -97,10 +109,18 @@ summary(fit2)
 ```
 
 
+
 ### Weight - Length relationship
 Using allometric growth model (Quinn and Deriso 1999)
 
 #### Valve weight - length 
+Group 1 - sea otter absent
+Coefficients estimated from this relationship were A = 0.012 and B = 1.84.
+
+
+![](../figures/absent_valveweight_length.png)
+
+
 Group 2 - sea otter present
 Coefficients estimated from this relationship were A = 0.00015 and B = 2.71.
 
@@ -108,6 +128,12 @@ Coefficients estimated from this relationship were A = 0.00015 and B = 2.71.
 ![](../figures/present_valveweight_length.png)
 
 #### Whole clam weight - length 
+Group 1 - sea otter absent 
+Coefficients estimated from this relationship were A = 0.066 and B = 1.97.
+
+![](../figures/absent_wholeclamweight_length.png)
+
+
 Group 2 - sea otter present
 Coefficients estimated from this relationship were A = 0.00411 and B = 2.53.
 
@@ -135,14 +161,30 @@ summary(fit_WvalB) ## need to save this for .RMD
 ```
 
 ## Catch Curve
-Traditional catch curve methods were not useful for these groupings due to large numbers of high ages.  Traditional methods estimated Z to be 0.01 or less, which is unlikely.  
+### Traditional catch curve
+Traditional catch curve methods were not useful for these groupings due to large numbers of high ages.  Traditional methods estimated Z to be 0.017 or less, which is unlikely.  These results did suggest a higher Z in sea otter present areas, but this appears mostly due to the peak age being alot higher at 63 (present group) versus the peak age of 50 (absent group).
 
+I didn't get a chance to regraph these (so they're not the best - they're the canned graphs from the fit output), but they use the weighted counts and display a catch curve for peak age to the age with the last observation greater than 1. 
+
+![Catch curve using peak age to age with last observation greater than 1](../figures/traditional_catch_curve_weighted.png)
+
+
+### Schnute 2007 method
 The Schnute 2007 was preliminarily examined for each group, preliminary results (which need to undergo sensitivity analysises) of average Z and the figure for the best model are presented below.  
 
 **Group 1 - Absent**
 
-Average Z (raw counts)= 0.045               Average Z (weighted counts)= 0.038
+Average Z (raw counts)= 0.045               
+Average Z (weighted counts)= 0.038
+
+![Best model (using AIC) for Group 1 sea otters absent](../figures/absent_attemp2_weighted.png)
+
 
 **Group 2 - Present**
 
-Average Z (raw counts)= 0.037               Average Z (weighted counts)= 
+Average Z (raw counts)= 0.037               
+Average Z (weighted counts)= 0.034
+
+![Best model (using AIC) for Group 2 sea otters present](../figures/present_attemp2_weighted.png)
+
+

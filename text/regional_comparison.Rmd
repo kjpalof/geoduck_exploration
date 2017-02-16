@@ -2,7 +2,9 @@
 title: "Regional geoduck age and growth"
 author: "Katie Palof"
 date: "February 16, 2017"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 ```{r, echo=FALSE, message=FALSE, warning=F}
 library(knitr)
@@ -17,10 +19,10 @@ options(scipen=9999) # remove scientific notation
 
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 ```
-Housekeeping/ long-term: code is in geoduck_exploration R project. see regional_age_growth_cc.R and regional_catccurve.R
+Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_age_growth_cc.R and regional_catchcurve.R
 
 ## Regional groupings
-Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters.  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud).  For purposes of this document Group 1 will be referred to as the "absent" group and Group 2 will be "present".  (we can change this later if needed - this is just a draft)
+Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters (total sample size = 611).  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud), which all have sea otters present (total sample size = 1048).  For purposes of this document Group 1 will be referred to as the "absent" group and Group 2 will be "present".  (we can change this later if needed - this is just a draft)
 
 ```{r}
 dat <- read.csv("../data/12_14_geoduck_all.csv")
@@ -71,7 +73,7 @@ wtd.t.test(x = present_wt$Age_2012, y = absent_wt$Age_2012, weight= present_wt$n
 ```
 
 ## Age Composition Similar?
-More exploration is neeeded for this analysis but a simple ks test suggests they are not from the same distribution. Code ee is present and ff is absent.
+More exploration is neeeded for this analysis but a simple ks test suggests they are not from the same distribution. I'm currently researching other tests/ analyses to look at this, and i also think I should bin the ages and redo this test just for sensitivity.  (Code ee is present and ff is absent.)
 
 ```{r}
 ee <- data.frame(x = rep(present_wt$Age_2012, present_wt$n_corrected), z = rep(present_wt$otter.status, present_wt$n_corrected))
@@ -84,6 +86,8 @@ ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data
 ```
 
 ## Growth
+** I have not run test or bootstraps to see if these two groups have statistically different growth.  This is just a visual comparison but note that sample size is larger in the present group.**
+
 ### VBL Length - Age
 ![](../figures/absent_VBL1.png)
 
@@ -181,13 +185,13 @@ summary(fit_WvalB) ## need to save this for .RMD
 ### Traditional catch curve
 Traditional catch curve methods were not useful for these groupings due to large numbers of high ages.  Traditional methods estimated Z to be 0.017 or less, which is unlikely.  These results did suggest a higher Z in sea otter present areas, but this appears mostly due to the peak age being alot higher at 63 (present group) versus the peak age of 50 (absent group).
 
-I didn't get a chance to regraph these (so they're not the best - they're the canned graphs from the fit output), but they use the weighted counts and display a catch curve for peak age to the age with the last observation greater than 1. 
+I didn't get a chance to re-graph these (so they're not the best - they're the canned graphs from the fit output), but they use the weighted counts and display a catch curve for peak age to the age with the last observation greater than 1. 
 
 ![Catch curve using peak age to age with last observation greater than 1](../figures/traditional_catch_curve_weighted.png)
 
 
 ### Schnute 2007 method
-The Schnute 2007 was preliminarily examined for each group, preliminary results (which need to undergo sensitivity analysises) of average Z and the figure for the best model are presented below.  
+The Schnute 2007 was preliminary examined for each group, preliminary results (which need to undergo sensitivity analyses) of average Z and the figure for the best model are presented below.  
 
 **Group 1 - Absent**
 
@@ -205,3 +209,5 @@ Average Z (weighted counts)= 0.034
 ![Best model (using AIC) for Group 2 sea otters present](../figures/present_attemp2_weighted.png)
 
 
+## Preliminary summary
+It looks like there are some differences between these two groups, these are reflected in the age composition hisograms and kernal density plots.  However, preliminary results from the catch curve analysis are a bit confusing (not what would be expected if your hypothesis is that sea otter present area would have higher total mortality).  Further sensitivity analyses need to be performed on the catch curves, these data should not be shared or interpreted to seriously.

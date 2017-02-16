@@ -143,6 +143,23 @@ Coefficients estimated from this relationship were A = 0.00411 and B = 2.53.
 ### Weight - Age relationship
 
 #### Valve Weight - Age relationship 
+Group 1 - sea otter absent
+
+![](../figures/absent_valveWlength.png)
+
+
+```{r}
+absent_rawL %>% filter(!is.na (WholeClamWeight_g)) -> absent_rawWL_whole
+# input file for valve weight - removes blanks in these for analysis 
+absent_rawL %>% filter(!is.na (Valve.Weight.g)) -> absent_rawWL_valve
+
+#fit with t0=0, and B from W-L relationship B=1.84
+vbTypical_WVB.a <- Valve.Weight.g~(Winf*(1-exp(-K*(Age_2012)))^1.84)
+fit_WvalB.a <- nls(vbTypical_WVB.a, data=absent_rawWL_valve, start= list(Winf=150, K=0.05))
+summary(fit_WvalB.a) ## need to save this for .RMD
+
+```
+
 Group 2 - sea otter present
 
 ![](../figures/present_valveWlength.png)

@@ -32,6 +32,9 @@ runCCA(fnam="nage394", hnam=NULL, ioenv=.GlobalEnv)
 # opens a GUI - have to figure out what all of the options here mean.
 ######################################################################
 
+#Results saved in Excel file
+#H:\Dive Fisheries\Geoduck aging\schnute2007_catch curve analysis.xls
+
 ###############
 # regional groups - using Age_2012 - age corrected to 2012 year
 present <- read.csv("./output/present_freq.csv")

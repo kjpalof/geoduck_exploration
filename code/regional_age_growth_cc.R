@@ -56,7 +56,7 @@ head(dat_hist2)
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
 one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
-  geom_histogram(binwidth = 1.0, position = "dodge") 
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_density(alpha = 0.3) 
@@ -118,6 +118,8 @@ two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
   xlab("Age_2012")+
   scale_y_continuous(breaks = c(50000, 100000), labels = c(5,10))
 
+#one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+#  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
 ### test and reason why I don't want to use the bar graphs
 #all_n_corrected %>% group_by(z, x) %>% summarise (n = n()) -> all.n.cort.sum
 #ggplot(all.n.cort.sum, aes(x=x, y = n, fill = z))  + ylab("weighted counts")+

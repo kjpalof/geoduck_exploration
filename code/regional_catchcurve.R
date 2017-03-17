@@ -87,14 +87,14 @@ plot(logWcount[60:92]~Age_2012[60:92],data=present_freq,main ="Present group,  j
 ## Catch curve models - present group ----------------------------------
 #catch-curve models here using catchCurve function - can tell the function
 max(present_freq$Wcount)
-fitCC1 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:85) 
+fitCC1 <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=63:85) # this needs raw counts NOT log counts.
 #max count age (63) to the first age with no obsrevations - 86
 
 summary(fitCC1)
 confint(fitCC1)
 plot(fitCC1)
 
-fitCC2 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:89) 
+fitCC2 <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=63:89) 
 #need to use raw data for this.  it transforms the frequencies, 
 #89 is last observation >1
 summary(fitCC2)

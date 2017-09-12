@@ -103,14 +103,14 @@ plot(fitCC2, main = "present")
 
 # use first "peak"
 ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
-fitCC3 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:85)
+fitCC3 <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=26:85)
 #need to use raw data for this.  it transforms the frequencies
 #26 is the first peak in count data
 summary(fitCC3)
 confint(fitCC3)
 plot(fitCC3)
 
-fitCC4 <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:89) 
+fitCC4 <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=26:89) 
 #need to use raw data for this.  it transforms the frequencies
 # no truncation at the end.
 summary(fitCC4)
@@ -118,13 +118,13 @@ confint(fitCC4)
 plot(fitCC4)
 
 # No truncation
-fitCC2a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=63:112) 
+fitCC2a <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=63:112) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC2a)
 confint(fitCC2a)
 plot(fitCC2a)
 # No truncation
-fitCC4a <- catchCurve(logWcount~Age_2012, data=present_freq, ages2use=26:112) 
+fitCC4a <- catchCurve(Wcount~Age_2012, data=present_freq, ages2use=26:112) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC4a)
 confint(fitCC4a)
@@ -155,7 +155,7 @@ plot(logWcount[38:83]~Age_2012[38:83],data=absent_freq,main ="absent group,  jus
 ## Catch curve models - absent group ----------------------------------
 #catch-curve models here using catchCurve function - can tell the function
 max(absent_freq$Wcount)
-fitCC1 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:76) 
+fitCC1 <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=50:76) 
 #max count age (50) to the first age with no obsrevations - 77
 
 summary(fitCC1)

@@ -60,7 +60,7 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
 ### Sea otter (w/ sitka) -------------------
 ################# age structure visual------------------------------------------------------
 head(dat2)
-head(dat_hist2) 
+#head(dat_hist2) why is this here?
 
 # unweighted 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 

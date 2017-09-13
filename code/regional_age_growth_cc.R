@@ -29,12 +29,19 @@ weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
 weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
   filter(area != "Taigud/Kolosh Islands") -> weight_pop #remove sitka area since they are grouped under "sitka" now
-weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
-  select (-area) %>% select(-AgeStudyWeighting)-> weight_pop
+weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
+  select(-AgeStudyWeighting)-> weight_pop
 
 # need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
+unique(dat$ADFG_Fishery.Area)
+dat %>% mutate(area1 = as.character(ADFG_Fishery.Area))  %>% 
+        mutate(area = ifelse(area1 == "Biorka/Legma Islands", "Sitka", 
+                             ifelse(area1 == "Taigud/Kolosh Islands", 
+                                    "Sitka", area1))) %>% 
+        select( -area1) -> dat1
+  
 # full data set with weigtings
-dat %>% left_join(weight_pop) -> dat2 # raw data
+dat1 %>% left_join(weight_pop) -> dat2 # raw data
 # summarized by area, age with weigthing
 dat2 %>% group_by(ADFG_Fishery.Area, Age_2012) %>% 
   summarise(n = n())  -> dat2_by.area

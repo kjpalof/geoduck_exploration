@@ -1,6 +1,6 @@
 #K.Palof 
 # Regional groupings / Group 1 and 2 / Sea Otter - presence or absence
-# Group Sitka - Biorka/Legma Islands and 
+# Group Sitka - Biorka/Legma Islands and Taigud/Kolosh Islands
 # Group 1 - sea otter absent - Nakat, Vallenar, Vegas/Hotspur
 # Group 2 - sea otter present - Cone is, east san, Tlevak, Warren, and 
       # Sitka (Biorka/ Taigud)   - do this with and without Sitka
@@ -27,6 +27,8 @@ theme_set(theme_bw()+
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
+weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
+  filter(area != "Taigud/Kolosh Islands") -> weight_pop #remove sitka area since they are grouped under "sitka" now
 weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
   select (-area) %>% select(-AgeStudyWeighting)-> weight_pop
 

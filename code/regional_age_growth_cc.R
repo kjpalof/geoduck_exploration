@@ -32,6 +32,7 @@ weight_pop %>%  filter(area != "Biorka/Legma Islands") %>%
 weight_pop %>% mutate(ADFG_Fishery.Area = area, wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
   select (-area) %>% select(-AgeStudyWeighting)-> weight_pop
 
+# need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
 # full data set with weigtings
 dat %>% left_join(weight_pop) -> dat2 # raw data
 # summarized by area, age with weigthing

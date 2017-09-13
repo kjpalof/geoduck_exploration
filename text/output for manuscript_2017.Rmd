@@ -22,13 +22,15 @@ Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_
 
 ## Area specific trends
 
+### Means, histograms (weighted or unweighted???), growth?
 
-
-## All age samples combined
-Geoduck age samples from 2012 and 2014 were combined into one dataset to estimate natural mortality, etc. 
 
 
 
 ## Regional groupings
 Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters (total sample size = 611).  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud), which all have sea otters present (total sample size = 1048).  For purposes of this document Group 1 will be referred to as the "absent" group and Group 2 will be "present".  (we can change this later if needed - this is just a draft)
 
+
+
+## All age samples combined
+Geoduck age samples from 2012 and 2014 were combined into one dataset to estimate natural mortality, etc. 

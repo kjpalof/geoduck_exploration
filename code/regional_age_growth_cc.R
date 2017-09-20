@@ -82,9 +82,12 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
 ## histograms --------
 head(dat2)
 # all areas unweighted
-ggplot(dat2, aes(Age_2012)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
   facet_grid( area ~.)
 
+#regional unweighted
+ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
 
 ################ data sets by sea otter ---------------
 dat2 %>% filter(otter.status == "present") -> present_raw

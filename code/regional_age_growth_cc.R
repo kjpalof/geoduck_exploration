@@ -58,7 +58,7 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
 
 
 ### Sea otter (w/ sitka) -------------------
-################# age structure visual------------------------------------------------------
+######## age structure visual------------------------------------------------------
 head(dat2)
 #head(dat_hist2) why is this here?
 
@@ -77,6 +77,8 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
 
 #ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
 #  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
+
+## regional histogram --------
 
 
 ################ data sets by sea otter ---------------

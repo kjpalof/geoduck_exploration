@@ -55,7 +55,8 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
 # this is just a scale peference
 
 # melt so that each age counted has it's own row
-
+### weighted histograms--------------
+#  need to remember how to do this - sara or ben
 
 ### Sea otter (w/ sitka) -------------------
 ######## age structure visual------------------------------------------------------
@@ -78,7 +79,11 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
 #ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_corrected, fill = otter.status))  + 
 #  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
-## regional histogram --------
+## histograms --------
+head(dat2)
+# all areas unweighted
+ggplot(dat2, aes(Age_2012)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+  facet_grid( area ~.)
 
 
 ################ data sets by sea otter ---------------

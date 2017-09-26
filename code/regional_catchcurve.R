@@ -152,7 +152,8 @@ absent_freq$Wcount == 0
 # plot just the right hand tail
 absent_freq$logWcount
 plot(logWcount[38:83]~Age_2012[38:83],data=absent_freq,main ="absent group,  just 'peak' to right tail, samples > 0", xlab = "Age", ylab="ln(frequency)",pch=19)
-
+# age 50 is peak
+ 
 ## Catch curve models - absent group ----------------------------------
 #catch-curve models here using catchCurve function - can tell the function
 max(absent_freq$Wcount)
@@ -163,7 +164,7 @@ summary(fitCC1)
 confint(fitCC1)
 plot(fitCC1)
 
-fitCC2 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:96) 
+fitCC2 <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=50:96) 
 #need to use raw data for this.  it transforms the frequencies, 
 #96 is last observation >1
 summary(fitCC2)
@@ -172,14 +173,14 @@ plot(fitCC2, main = "absent")
 
 # use first "peak"
 ggplot(absent_freq, aes(Age_2012, Wcount)) +geom_point()
-fitCC3 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:76)
+fitCC3 <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=26:76)
 #need to use raw data for this.  it transforms the frequencies
 #26 is the first peak in count data
 summary(fitCC3)
 confint(fitCC3)
 plot(fitCC3)
 
-fitCC4 <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:96) 
+fitCC4 <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=26:96) 
 #need to use raw data for this.  it transforms the frequencies
 # no truncation at the end.
 summary(fitCC4)
@@ -187,13 +188,13 @@ confint(fitCC4)
 plot(fitCC4)
 
 # No truncation
-fitCC2a <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=50:102) 
+fitCC2a <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=50:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC2a)
 confint(fitCC2a)
 plot(fitCC2a)
 # No truncation
-fitCC4a <- catchCurve(logWcount~Age_2012, data=absent_freq, ages2use=26:102) 
+fitCC4a <- catchCurve(Wcount~Age_2012, data=absent_freq, ages2use=26:102) 
 #need to use raw data for this.  it transforms the frequencies, 
 summary(fitCC4a)
 confint(fitCC4a)

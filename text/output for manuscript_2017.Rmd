@@ -77,9 +77,7 @@ dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, 
 ```
 
 
-### Means, histograms (weighted or unweighted???), growth?
-
-
+### growth?
 
 
 ## Regional groupings
@@ -120,5 +118,7 @@ ggplot(all_n_corrected, aes(x=x, fill = z))+
 ggplot(all_n_corrected, aes(x=x, fill=z)) + 
   geom_density(alpha = 0.3) 
 ```
+
+## Natural mortality estimates by group
 
 

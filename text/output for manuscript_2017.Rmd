@@ -60,10 +60,20 @@ dat_wt_by.area2 %>% filter(otter.status == "present") -> present_wt
 dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 ```
 
-# all areas unweighted
+### all areas unweighted
 ```{r area histograms }
 ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
   facet_grid( area ~.)
+```
+
+### Weighted mean age 
+```{r area means }
+# use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
+dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, n_wt), 
+               SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
+               MIN = min(Age_2012, na.rm = TRUE), 
+               MAX = max(Age_2012, na.rm = TRUE), 
+               n = sum(n))
 ```
 
 

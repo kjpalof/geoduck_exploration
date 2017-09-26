@@ -103,8 +103,8 @@ present_wt %>% group_by(otter.status, Age_2012) %>% summarise (count = n())
 dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, n_wt), 
                SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
                MIN = min(Age_2012, na.rm = TRUE), 
-               MAX = max(Age_2012, na.rm = TRUE))
-
+               MAX = max(Age_2012, na.rm = TRUE), 
+               n = sum(n))
 
 # mean weighted by the weighted count (n_wt = n*wt_each)
 dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))

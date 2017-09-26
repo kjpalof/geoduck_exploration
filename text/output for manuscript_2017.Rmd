@@ -95,7 +95,18 @@ dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Ag
                        n = sum(n))
 ```
 
+## Age Composition Similar?
+More exploration is neeeded for this analysis but a simple ks test suggests they are not from the same distribution. I'm currently researching other tests/ analyses to look at this, and i also think I should bin the ages and redo this test just for sensitivity.  (Code ee is present and ff is absent.)
 
+```{r}
+present_dist <- data.frame(x = rep(present_wt$Age_2012, present_wt$n_corrected), z = rep(present_wt$otter.status, present_wt$n_corrected))
+
+absent_dist <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z = rep(absent_wt$otter.status, absent_wt$n_corrected))
+
+ks.test(present_dist$x, absent_dist$x) # reject null that two are equal
+
+present_dist %>% bind_rows(absent_dist) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
+```
 
 ## All age samples combined
 Geoduck age samples from 2012 and 2014 were combined into one dataset to estimate natural mortality, etc. 

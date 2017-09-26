@@ -23,8 +23,8 @@ Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_
 ## Area specific trends
 ```{r data load, echo = FALSE, message = FALSE, warning=FALSE}
 ## Load data -------------------------------------------------------
-dat <- read.csv("./data/12_14_geoduck_all.csv")
-weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
+dat <- read.csv("../data/12_14_geoduck_all.csv")
+weight_pop <- read.csv("../data/GeoduckAgeStudyWeighting.csv")
 
 weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
   filter(area != "Taigud/Kolosh Islands") -> weight_pop #remove sitka area since they are grouped under "sitka" now
@@ -32,7 +32,7 @@ weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>%
   select(-AgeStudyWeighting)-> weight_pop
 
 # need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
-unique(dat$ADFG_Fishery.Area)
+#unique(dat$ADFG_Fishery.Area)
 dat %>% mutate(area1 = as.character(ADFG_Fishery.Area))  %>% 
         mutate(area = ifelse(area1 == "Biorka/Legma Islands", "Sitka", 
                              ifelse(area1 == "Taigud/Kolosh Islands", 
@@ -52,6 +52,12 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
   mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
 # n_corrected is counts using population size weighting.  n_wt is proportion using same weighting
 # this is just a scale peference
+
+################ data sets by sea otter ---------------
+dat2 %>% filter(otter.status == "present") -> present_raw
+dat2 %>% filter(otter.status == "absent") -> absent_raw
+dat_wt_by.area2 %>% filter(otter.status == "present") -> present_wt
+dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
 ```
 
 # all areas unweighted
@@ -59,6 +65,8 @@ dat_wt_by.area %>% left_join(total.n.area) %>%
 ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
   facet_grid( area ~.)
 ```
+
+
 ### Means, histograms (weighted or unweighted???), growth?
 
 

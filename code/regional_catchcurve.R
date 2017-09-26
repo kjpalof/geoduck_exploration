@@ -1,4 +1,4 @@
-#K.Palof 
+#K.Palof   edited 9-26-17 for manuscript.  
 # Catch curve anlysis for these two groups.
 # Regional groupings / Group 1 and 2 / Sea Otter - presence or absence
 # Group Sitka - Biorka/Legma Islands and 
@@ -83,6 +83,7 @@ present_freq$Wcount == 0
 # plot just the right hand tail
 str(agefreq2)
 plot(logWcount[60:92]~Age_2012[60:92],data=present_freq,main ="Present group,  just 'peak' to right tail, samples > 0", xlab = "Age", ylab="ln(frequency)",pch=19)
+#this is starting at age 63
 
 ## Catch curve models - present group ----------------------------------
 #catch-curve models here using catchCurve function - can tell the function

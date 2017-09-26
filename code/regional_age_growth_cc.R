@@ -47,7 +47,7 @@ dat2 %>% group_by(area, Age_2012) %>%
   summarise(n = n())  -> dat2_by.area # counts by age for each area 
 dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area # counts by age/area with weighting
 
-## weighting counts 
+## weighting counts ------------------
 dat1 %>% group_by(area) %>% summarise(N_samp = n()) ->total.n.area  # number sampled in each area
 dat_wt_by.area %>% left_join(total.n.area) %>% 
   mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
@@ -132,7 +132,7 @@ ff <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z = rep(abs
 ks.test(ee$x, ff$x) # reject null that two are equal
 
 ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
-# weighted histograms
+# weighted histograms for each group
 two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
   geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge")+ylab("expanded count (x10000s)")+
   xlab("Age_2012")+

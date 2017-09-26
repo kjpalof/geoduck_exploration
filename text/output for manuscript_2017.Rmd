@@ -106,6 +106,15 @@ absent_dist <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z 
 ks.test(present_dist$x, absent_dist$x) # reject null that two are equal
 
 present_dist %>% bind_rows(absent_dist) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
+
+# weighted histograms for each group
+ggplot(all_n_corrected, aes(x=x, fill = z))+
+  geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge")+ylab("expanded count (x10000s)")+
+  xlab("Age_2012")+
+  scale_y_continuous(breaks = c(50000, 100000), labels = c(5,10))
+
+ggplot(all_n_corrected, aes(x=x, fill=z)) + 
+  geom_density(alpha = 0.3) 
 ```
 
 ## All age samples combined

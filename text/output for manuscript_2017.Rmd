@@ -107,6 +107,10 @@ ks.test(present_dist$x, absent_dist$x) # reject null that two are equal
 
 present_dist %>% bind_rows(absent_dist) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
 
+```
+
+### Weighted histograms
+```{r area histograms }
 # weighted histograms for each group
 ggplot(all_n_corrected, aes(x=x, fill = z))+
   geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge")+ylab("expanded count (x10000s)")+
@@ -117,5 +121,4 @@ ggplot(all_n_corrected, aes(x=x, fill=z)) +
   geom_density(alpha = 0.3) 
 ```
 
-## All age samples combined
-Geoduck age samples from 2012 and 2014 were combined into one dataset to estimate natural mortality, etc. 
+

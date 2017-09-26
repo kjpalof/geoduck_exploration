@@ -112,7 +112,11 @@ dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, 
 
 ################# mean Age by group-------------------------------------------
 # use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
-dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt))
+dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt),
+                       SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
+                       MIN = min(Age_2012, na.rm = TRUE), 
+                       MAX = max(Age_2012, na.rm = TRUE), 
+                       n = sum(n))
 # mean weighted by the weighted count (n_wt = n*wt_each)
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))
 # mean weighted by the corrected n (proportion of each age applied to population size)

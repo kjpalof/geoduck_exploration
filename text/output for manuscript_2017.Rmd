@@ -126,6 +126,11 @@ ggplot(all_n_corrected, aes(x=x, fill=z)) +
 present_wt %>% group_by(otter.status, Age_2012) %>% summarise( count = sum(n), Wcount = sum(n_corrected)) -> present_freq
 present_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> present_freq
 
-ggplot(present_freq, aes(Age_2012, Wcount)) +geom_point()
+ggplot(present_freq, aes(Age_2012, logWcount)) +geom_point()
+
+absent_wt %>% group_by(otter.status, Age_2012) %>% summarise( count = sum(n), Wcount = sum(n_corrected)) -> absent_freq
+absent_freq %>% mutate(logcount = log(count), logWcount = log(Wcount)) -> absent_freq
+
+ggplot(absent_freq, aes(Age_2012, logWcount)) +geom_point()
 
 ```

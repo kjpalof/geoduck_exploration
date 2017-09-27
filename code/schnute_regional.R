@@ -19,7 +19,9 @@ install.packages("PBSfishery") # Need to run this using an old version of R.
 #####
 library(PBStools)
 library(PBSdata)
-library(PBSfishery)
+library(PBSmapping)
+library(PBSmodelling)
+library(PBSfishery) # built before R 3.0.0
 #need to have OpenBugs 3.2.2 installed
 library(BRugs)
 

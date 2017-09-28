@@ -6,6 +6,7 @@
 # try using PBStools.https://code.google.com/p/pbs-tools/
 
 # only have to install packages once
+# needs an older versino of R.  Running v.3.1.3
 
 ######
 install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBStools_1.24.20.zip", repos = NULL)
@@ -17,11 +18,12 @@ install.packages("RODBC")
 install.packages("BRugs")
 install.packages("PBSfishery") # Need to run this using an old version of R.  
 #####
+library(dplyr)
 library(PBStools)
 library(PBSdata)
 library(PBSmapping)
 library(PBSmodelling)
-library(PBSfishery) # built before R 3.0.0
+library(PBSfishery) # built before R 3.0.0, switched to v. 3.1.3
 #need to have OpenBugs 3.2.2 installed
 library(BRugs)
 
@@ -40,9 +42,9 @@ runCCA(fnam="nage394", hnam=NULL, ioenv=.GlobalEnv)
 ###############
 # regional groups - using Age_2012 - age corrected to 2012 year
 present <- read.csv("./output/present_freq.csv")
-present %>% select( -otter.status) -> present_cc
+present_freq %>% select( -otter.status) -> present_cc
 
-present_cc1 <- as.matrix(present_cc[,2:3])
+present_cc1 <- as.matrix(present_cc[,2:4])
 #colnames(GD_woSIT_1214age) <- c("1214")
 c <- c(2, 5:85, 87:90, 94,95,101,102,107,112)
 c2 <-dput(as.character(c))
@@ -58,9 +60,9 @@ runCCA(fnam="present_cc1", hnam=NULL, ioenv=.GlobalEnv)
 
 # regional groups - using Age_2012 - age corrected to 2012 year
 absent <- read.csv("./output/absent_freq.csv")
-absent %>% select( -otter.status) -> absent_cc
+absent_freq %>% select( -otter.status) -> absent_cc
 
-absent_cc1 <- as.matrix(absent_cc[,2:3])
+absent_cc1 <- as.matrix(absent_cc[,2:4])
 #colnames(GD_woSIT_1214age) <- c("1214")
 c <- c(7:10, 13:16, 18:33, 35:76, 78:81,83,86:88,91:96,98,100,102)
 c2 <-dput(as.character(c))

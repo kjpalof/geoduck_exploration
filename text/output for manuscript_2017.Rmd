@@ -15,6 +15,7 @@ library(nlstools)
 library(AICcmodavg)
 library(ggplot2)
 library(SDMTools)
+library(pander)
 options(scipen=9999) # remove scientific notation
 theme_set(theme_bw()+ 
             theme(panel.grid.major = element_blank(),

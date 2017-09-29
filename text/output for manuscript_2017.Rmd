@@ -16,6 +16,9 @@ library(AICcmodavg)
 library(ggplot2)
 library(SDMTools)
 options(scipen=9999) # remove scientific notation
+theme_set(theme_bw()+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
 
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 ```

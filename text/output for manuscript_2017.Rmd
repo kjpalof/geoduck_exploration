@@ -78,7 +78,10 @@ dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, 
                SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
                MIN = min(Age_2012, na.rm = TRUE), 
                MAX = max(Age_2012, na.rm = TRUE), 
-               n = sum(n))
+               n = sum(n)) -> table1
+table1 %>% as.data.frame(table1) -> table1
+panderOptions("digits", 4)
+pander(table1)
 ```
 
 
@@ -95,7 +98,10 @@ dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Ag
                        SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
                        MIN = min(Age_2012, na.rm = TRUE), 
                        MAX = max(Age_2012, na.rm = TRUE), 
-                       n = sum(n))
+                       n = sum(n)) -> table2
+table2 %>% as.data.frame(table2) -> table2
+panderOptions("digits", 4)
+pander(table2)
 ```
 
 ## Age Composition Similar?

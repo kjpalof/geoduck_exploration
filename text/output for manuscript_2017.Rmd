@@ -2,7 +2,9 @@
 title: "manuscript data and figures"
 author: "Katie Palof"
 date: "September 12, 2017"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r, echo=FALSE, message=FALSE, warning=F}

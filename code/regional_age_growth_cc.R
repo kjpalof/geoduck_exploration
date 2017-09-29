@@ -83,8 +83,10 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
 ## histograms --------
 head(dat2)
 # all areas unweighted
+dat2 %>% mutate(Area = as.factor(area)) ->dat2
+levels(dat2$Area) <- c("CIN", "ESF", "NI", "Sitka", "TS", "VB", "V/HI", "W/KI")
 ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
-  facet_grid( area ~.)
+  facet_grid( Area ~.)
 
 #regional unweighted
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 

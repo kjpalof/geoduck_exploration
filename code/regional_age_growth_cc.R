@@ -1,4 +1,6 @@
 #K.Palof 
+# updated: 6-15-2020 - how is this different from 'geoduck_explore_all_weighted.R'???
+
 # Regional groupings / Group 1 and 2 / Sea Otter - presence or absence
 # Group Sitka - Biorka/Legma Islands and Taigud/Kolosh Islands
 # Group 1 - sea otter absent - Nakat, Vallenar, Vegas/Hotspur
@@ -7,22 +9,8 @@
 # Geoduck age exploration - addressing issues from late 2016/early 2017
 # 
 
-rm(list = ls()) # clear workspace since data frames have same names
-
-## Load packages ---------------------------------------------------
-library(tidyverse)
-library(FSA)
-library(gridExtra)
-library(weights)
-library(nlstools)
-library(AICcmodavg)
-library(ggplot2)
-library(scales)
-library(SDMTools)
-options(scipen=9999) # remove scientific notation
-theme_set(theme_bw()+ 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()))
+## Load --------------------------------------------------
+source("./code/helper.r")
 
 ## Load data -------------------------------------------------------
 dat <- read.csv("./data/12_14_geoduck_all.csv")

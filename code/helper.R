@@ -23,3 +23,8 @@ theme_set(theme_sleek())
 
 # project specfic ------
 library(FSA)
+library(weights)
+library(nlstools)
+library(AICcmodavg)
+
+library(SDMTools)

@@ -98,20 +98,28 @@ ggsave("./figures/raw_count_pre_abs_facet.png", width = 6.5, height = 5)
 head(dat2)
 # all areas unweighted
 dat2 %>% mutate(Area = as.factor(area)) ->dat2
-#levels(dat2$Area) <- c("CIN", "ESF", "NI", "Sitka", "TS", "VB", "V/HI", "W/KI")
-ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+levels(dat2$Area) <- c("B/L Is", "CIN", "ESF", "NI", "T/K Is", "TS", "VB", "V/H Is", "W/K Is")
+ggplot(dat2, aes(Age_2012, fill = waters)) + 
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  xlab("Age (scaled to 2012 year class)") +
   facet_grid( Area ~.)
 ggsave("./figures/count_by_area_pres_abs.png", width = 6.5, height = 5)
 
-ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_density(alpha = 0.3) +
+ggplot(dat2, aes(Age_2012, fill = waters)) + 
+  geom_density(alpha = 0.3) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  xlab("Age (scaled to 2012 year class)") +
   facet_grid( Area ~.)
 ggsave("./figures/density_by_area_pres_abs.png", width = 6.5, height = 5)
 
 #regional unweighted
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+ggplot(dat2, aes(x=Age_2012, fill = waters)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
 
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+ggplot(dat2, aes(x=Age_2012, fill= waters)) + 
   geom_density(alpha = 0.3) 
 
 ################ data sets by sea otter ---------------
@@ -171,11 +179,19 @@ ff <- data.frame(x = rep(absent_wt$Age_2012, absent_wt$n_corrected), z = rep(abs
 
 ks.test(ee$x, ff$x) # reject null that two are equal
 
-ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data set. x is ages and z is otter.status
+ee %>% bind_rows(ff) -> all_n_corrected # expanded counts combined into one data set. 
+# x is ages and z is otter.status
+
+all_n_corrected %>% 
+  mutate(waters = ifelse(z == "present", "outside", "inside")) %>% 
+  rename(age = x, otter = z) -> all_n_corrected
 # weighted histograms for each group
-two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
-  geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge")+ylab("expanded count (x10000s)")+
-  xlab("Age_2012")+
+two <- ggplot(all_n_corrected, aes(x = age, fill = waters, color = waters))+
+  geom_histogram(binwidth = 1.0, alpha =0.5, position = "dodge") +
+  ylab("expanded count (x10000s)") +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  xlab("Age (scaled to 2012 year class)") +
   scale_y_continuous(breaks = c(50000, 100000), labels = c(5,10))
 
 #one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
@@ -186,10 +202,13 @@ two <- ggplot(all_n_corrected, aes(x=x, fill = z))+
 #  geom_bar(stat = "identity", width =0.5) # can you add density to this as a bar graph?
 
 # density of ages in each group
-png('./figures/hist_density_corrected.png')
-ggplot(all_n_corrected, aes(x=x, fill=z)) + 
-  geom_density(alpha = 0.3) 
-dev.off()
+ggplot(all_n_corrected, aes(x = age, fill = waters, color = waters)) + 
+  geom_density(alpha = 0.3) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  xlab("Age (scaled to 2012 year class)") +
+  ggtitle("Density")
+ggsave('./figures/hist_density_corrected.png', width = 6.5, height = 5 )
 
 png('./figures/histogram_count_both.png')
 grid.arrange(one, two, nrow=2)

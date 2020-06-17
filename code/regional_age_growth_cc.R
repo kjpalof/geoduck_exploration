@@ -55,16 +55,37 @@ head(dat2)
 #head(dat_hist2) why is this here?
 
 # unweighted 
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+# waters designation NOT sea otter 
+ggplot(dat2, aes(x=Age_2012, color = waters, fill = waters)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
-one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+one <- 
+ggplot(dat2, aes(x=Age_2012, fill = waters, color = waters)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
-  ggtitle ("Count of ages for inside and outside waters groupings")
+  ggtitle ("Count of ages for inside and outside waters groupings") +
+  xlab("Age (scaled to 2012 year class)") +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
+
 ggsave("./figures/raw_count_pre_abs.png", width = 6.5, height = 5)
 
-ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
-  geom_density(alpha = 0.3) 
+ggplot(dat2, aes(x=Age_2012, fill = waters, color = waters )) + 
+  geom_density(alpha = 0.3) +
+  ggtitle ("Density for inside and outside waters groupings") +
+  xlab("Age (scaled to 2012 year class)") +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
 ggsave("./figures/raw_density_pre_abs.png", width = 6.5, height = 5)
+
+# facet wrap 
+ggplot(dat2, aes(x=Age_2012, color = waters, fill = waters)) + 
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+  ggtitle ("Count of ages") +
+  xlab("Age (scaled to 2012 year class)") +
+  facet_grid(waters ~ .) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  theme(legend.position="none")
+ggsave("./figures/raw_count_pre_abs_facet.png", width = 6.5, height = 5)
 
 #weighted 
 #two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + ylab("weighted counts")+

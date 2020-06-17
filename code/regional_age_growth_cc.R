@@ -17,17 +17,17 @@ dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
 weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
-  filter(area != "Taigud/Kolosh Islands") -> weight_pop #remove sitka area since they are grouped under "sitka" now
+  filter(area != "Taigud/Kolosh Islands") -> weight_pop # remove sitka area since they are grouped under "sitka" now
 weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
   select(-AgeStudyWeighting)-> weight_pop
 
 # need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
 unique(dat$ADFG_Fishery.Area)
-dat %>% mutate(area1 = as.character(ADFG_Fishery.Area))  %>% 
-        mutate(area = ifelse(area1 == "Biorka/Legma Islands", "Sitka", 
-                             ifelse(area1 == "Taigud/Kolosh Islands", 
-                                    "Sitka", area1))) %>% 
-        select( -area1) -> dat1
+dat %>% mutate(area = as.character(ADFG_Fishery.Area))  -> dat1 #%>% 
+#        mutate(area = ifelse(area1 == "Biorka/Legma Islands", "Sitka", 
+#                             ifelse(area1 == "Taigud/Kolosh Islands", 
+#                                    "Sitka", area1))) %>% 
+#        select( -area1) -> dat1
   
 # full data set with weigtings
 dat1 %>% left_join(weight_pop) -> dat2 # raw data
@@ -57,9 +57,11 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
 one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
+ggsave("./figures/raw_count_pre_abs.png", width = 6.5, height = 5)
 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_density(alpha = 0.3) 
+ggsave("./figures/raw_density_pre_abs.png", width = 6.5, height = 5)
 
 #weighted 
 #two <- ggplot(dat_wt_by.area2, aes(x=Age_2012, y = n_wt, fill = otter.status))  + ylab("weighted counts")+
@@ -72,13 +74,21 @@ ggplot(dat2, aes(x=Age_2012, fill=otter.status)) +
 head(dat2)
 # all areas unweighted
 dat2 %>% mutate(Area = as.factor(area)) ->dat2
-levels(dat2$Area) <- c("CIN", "ESF", "NI", "Sitka", "TS", "VB", "V/HI", "W/KI")
+#levels(dat2$Area) <- c("CIN", "ESF", "NI", "Sitka", "TS", "VB", "V/HI", "W/KI")
 ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
   facet_grid( Area ~.)
+ggsave("./figures/count_by_area_pres_abs.png", width = 6.5, height = 5)
+
+ggplot(dat2, aes(Age_2012, fill = otter.status)) + geom_density(alpha = 0.3) +
+  facet_grid( Area ~.)
+ggsave("./figures/density_by_area_pres_abs.png", width = 6.5, height = 5)
 
 #regional unweighted
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
+
+ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
+  geom_density(alpha = 0.3) 
 
 ################ data sets by sea otter ---------------
 dat2 %>% filter(otter.status == "present") -> present_raw

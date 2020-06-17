@@ -16,10 +16,12 @@ source("./code/helper.r")
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
 
-weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
-  filter(area != "Taigud/Kolosh Islands") -> weight_pop # remove sitka area since they are grouped under "sitka" now
-weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
-  select(-AgeStudyWeighting)-> weight_pop
+#weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
+#  filter(area != "Taigud/Kolosh Islands") -> weight_pop # remove sitka area since they are grouped under "sitka" now
+weight_pop %>% 
+  mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
+  select(-AgeStudyWeighting) %>% 
+  mutate(waters = ifelse(otter.status == "present", "outside", "inside")) -> weight_pop
 
 # need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
 unique(dat$ADFG_Fishery.Area)
@@ -56,7 +58,8 @@ head(dat2)
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
 one <- ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
-  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge")
+  geom_histogram(binwidth = 1.0, alpha = 0.5, position = "dodge") +
+  ggtitle ("Count of ages for inside and outside waters groupings")
 ggsave("./figures/raw_count_pre_abs.png", width = 6.5, height = 5)
 
 ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 

@@ -516,7 +516,7 @@ g1 <- GompertzFuns()
 #http://derekogle.com/IFAR/supplements/growth/OtherGrowthFuns.html
 
 
-# LVB -------------- 
+# present LVB -------------- 
 #  standard growth relationship with valve length
 plot(Valve.Length.mm ~ Age_2012, data = present_raw)
 svR1 <- list(Linf=142, k=0.05, a=1.1, b=0.4)
@@ -540,7 +540,7 @@ svTypical.p # tried to change back to these start values
 vbTypical.t0 <- Valve.Length.mm~(Linf*(1-exp(-K*(Age_2012)))) # the equation to fit
 fit2 <- nls(vbTypical.t0, data=present_rawL, start= list(Linf=142, K=0.58))
 fitPlot(fit2, xlab="Age", ylab="Valve Length (mm)", main="", col.mdl="red") 
-#### ----save this age-length plot ------------------
+#### ----save this age-length plot 
 fit2
 summary(fit2)
 overview(fit2)
@@ -566,7 +566,8 @@ boot2 <-nlsBoot(fit2, niter=1000)
 confint(boot2, plot=TRUE)
 
 ests <-boot2$coefboot
-### plots of fit and bootstrap CIs ----------------
+### plot -----
+#  of fit and bootstrap CIs 
 ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
@@ -590,7 +591,7 @@ dev.off()
 #ggsave("./figures/present_VBL.png", dpi=300, height=4.5, width=6.5, units="in")
 
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
-### save this graph for RMD ---------------
+### save this graph for RMD !!FIX!!
 
 ## other parametrization ----------
 # Galucci and Quinn 1979
@@ -612,8 +613,8 @@ fitFrancis <- nls(Valve.Length.mm ~vbFrancis(Age_2012, L1, L2, L3, t1 = ages[1],
 overview(fitFrancis)
 
 
-#################################################################
-## weight - length --------------------------------------
+
+################### Weight - Length (present) --------------------
 present_rawL
 # input file for whole clam weight 
 present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
@@ -622,8 +623,8 @@ present_rawL %>% filter(!is.na (Valve.Weight.g)) -> present_rawWL_valve
 
 # using Length - Weight relationship to estimate Beta
 ### used to get an estimate of beta parameter for weight-age relationship
-############
-################### Weight - Length (present) ####################
+
+
 # valve length -------------
 plot(Valve.Weight.g~Valve.Length.mm, data=present_rawWL_valve)
 
@@ -636,7 +637,7 @@ fit
 summary(fit)
 overview(fit)
 
-## plotting ##############################################
+## plot ------
 png('./figures/present_valveweight_length.png')
 plot(Valve.Weight.g~Valve.Length.mm,data=present_rawWL_valve,ylab="Valve Weight, g",
      xlab=" Valve Length, mm", pch=19, ylim=c(0,300), xlim=c(0,220), 
@@ -666,8 +667,7 @@ plot(resid(fit)~Valve.Length.mm, data=present_rawWL_valve)#look for normality as
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
 
-##################################################
-# whole clam weight -------------
+# whole clam weight (present) -------------
 plot(WholeClamWeight_g~Valve.Length.mm, data=present_rawWL_whole)
 
 # additive error structure, non-linear fit
@@ -679,7 +679,7 @@ fit_WC
 summary(fit_WC)
 overview(fit_WC)
 
-## plotting ##############################################
+## plot ##############################################
 png('./figures/present_wholeclamweight_length.png')
 plot(WholeClamWeight_g~Valve.Length.mm,data=present_rawWL_whole,ylab="Whole Clam Weight, g",
      xlab=" Valve Length, mm", pch=19, ylim=c(0,3700), xlim=c(0,220), 
@@ -710,9 +710,10 @@ plot(resid(fit_WC)~Valve.Length.mm, data=present_rawWL_whole)#look for normality
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
 
-##### WEIGHT - Age ------------------------------
+##### weight - Age (present) ------------------------------
 # using weight - age relationship
-#### whole clam weight - age ------------------------------
+
+#### whole clam weight - age 
 present_rawWL_whole %>% filter(is.na(Age_2012)) # check for ones without ages.
 
 plot(WholeClamWeight_g~Age_2012,data=present_rawWL_whole,
@@ -753,6 +754,7 @@ estsWVp <-boot_WvalB$coefboot
 ages2plot <- 0:120
 #lengths2plot <- 0:204
 
+# plot -------------
 par(mfrow=c(1,1))
 
 png('./figures/present_WholeCW_age.png')
@@ -811,7 +813,7 @@ svTypical.a # tried to change back to these start values
 vbTypical.t0 <- Valve.Length.mm~(Linf*(1-exp(-K*(Age_2012)))) # the equation to fit
 fit2a <- nls(vbTypical.t0, data=absent_rawL, start= list(Linf=131, K=0.44))
 fitPlot(fit2a, xlab="Age", ylab="Valve Length (mm)", main="", col.mdl="red") 
-#### ----save this age-length plot ------------------
+#### ----save this age-length plot 
 fit2a
 summary(fit2a)
 overview(fit2a)
@@ -837,7 +839,8 @@ boot2a <-nlsBoot(fit2a, niter=1000)
 confint(boot2a, plot=TRUE)
 
 ests.a <-boot2a$coefboot
-### plots of fit and bootstrap CIs ----------------
+### plots -----------
+#of fit and bootstrap CIs 
 ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
@@ -861,7 +864,7 @@ dev.off()
 #ggsave("./figures/present_VBL.png", dpi=300, height=4.5, width=6.5, units="in")
 
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
-### save this graph for RMD ---------------
+### save this graph for RMD !!FIX!!
 
 ## other parametrization ----------
 # Galucci and Quinn 1979
@@ -883,8 +886,7 @@ fitFrancis <- nls(Valve.Length.mm ~vbFrancis(Age_2012, L1, L2, L3, t1 = ages[1],
 overview(fitFrancis)
 
 
-#################################################################
-## weight - length --------------------------------------
+## weight - length (absent) --------------------------------------
 absent_rawL
 # input file for whole clam weight 
 absent_rawL %>% filter(!is.na (WholeClamWeight_g)) -> absent_rawWL_whole
@@ -893,8 +895,7 @@ absent_rawL %>% filter(!is.na (Valve.Weight.g)) -> absent_rawWL_valve
 
 # using Length - Weight relationship to estimate Beta
 ### used to get an estimate of beta parameter for weight-age relationship
-############
-################### Weight - Length (present) ####################
+
 # valve length -------------
 plot(Valve.Weight.g~Valve.Length.mm, data=absent_rawWL_valve)
 
@@ -907,7 +908,7 @@ fit.a
 summary(fit.a)
 overview(fit.a)
 
-## plotting ##############################################
+## plot---------------------------------
 png('./figures/absent_valveweight_length.png')
 plot(Valve.Weight.g~Valve.Length.mm,data=absent_rawWL_valve,ylab="Valve Weight, g",
      xlab=" Valve Length, mm", pch=19, ylim=c(0,300), xlim=c(0,220), 
@@ -937,8 +938,8 @@ plot(resid(fit.a)~Valve.Length.mm, data=absent_rawWL_valve)#look for normality a
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
 
-##################################################
-# whole clam weight -------------
+
+# whole clam weight (absent)-------------
 plot(WholeClamWeight_g~Valve.Length.mm, data=absent_rawWL_whole)
 # remove outlier of 5925
 absent_rawWL_whole %>% filter(WholeClamWeight_g < 4000) ->absent_rawWL_whole
@@ -951,7 +952,7 @@ fit_WC.a
 summary(fit_WC.a)
 overview(fit_WC.a)
 
-## plotting ##############################################
+## plot --------------------
 png('./figures/absent_wholeclamweight_length.png')
 plot(WholeClamWeight_g~Valve.Length.mm,data=absent_rawWL_whole,
      ylab="Whole Clam Weight, g",xlab=" Valve Length, mm", pch=19, 
@@ -982,9 +983,9 @@ plot(resid(fit_WC.a)~Valve.Length.mm, data=absent_rawWL_whole)#look for normalit
 #appears that residuals do not have a pattern with age
 # additive error structure appears appropriate
 
-##### WEIGHT - Age ------------------------------
+##### WEIGHT - Age (absent) ------------------------------
 # using weight - age relationship
-#### whole clam weight - age ------------------------------
+#### whole clam weight - age 
 absent_rawWL_whole %>% filter(is.na(Age_2012)) # check for ones without ages.
 
 plot(WholeClamWeight_g~Age_2012,data=absent_rawWL_whole,ylab="Whole Clam Weight (g)",  
@@ -1025,6 +1026,7 @@ ages2plot <- 0:120
 
 par(mfrow=c(1,1))
 
+## plot ------------
 png('./figures/absent_wholeClam_Wlength.png')
 fitPlot(fit_WvalB.a, xlab="Age (2012)", ylab="Whole Clam Weight (g)",
         xlim=range(ages2plot),main=" Group 1 inside waters")

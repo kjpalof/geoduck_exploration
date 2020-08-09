@@ -132,4 +132,39 @@ summary(fit2a)
 
 ```
 
+## Weight - age relationship {-}
 
+### All Southeast Alaksa samples combines - weight-age {-}
+```{r, }
+dat2_rawL %>% filter(!is.na (WholeClamWeight_g)) -> dat2_rawWL_whole
+vbTypical_WVB <- WholeClamWeight_g~(Winf*(1-exp(-K*(Age_2012)))^2.71)
+fit_WvalB <- nls(vbTypical_WVB, data=dat2_rawWL_whole, start= list(Winf=150, K=0.05))
+#fitPlot(fit_WvalB, xlab="Age", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+#fit_WvalB
+summary(fit_WvalB) ## need to save this for .RMD
+
+```
+
+
+```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+knitr::include_graphics("../figures/Weight_age_all_colors_bootfit.png", dpi = 100)
+```
+
+## Weight - length relationship {-}
+
+### All Southeast Alaksa samples combines - weight-length {-}
+```{r, }
+dat2_rawL %>% filter(!is.na (WholeClamWeight_g)) -> dat2_rawWL_whole
+wlallo2 <- WholeClamWeight_g ~ (A)*(Valve.Length.mm^B)
+fit_WC <- nls(wlallo2, data=dat2_rawWL_whole, start=list(A=0.01, B=1.8))#A=0.01, B=1.8
+
+#fitPlot(fit_WC, xlab="Valve Length", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+#fit_WC
+summary(fit_WC)
+#overview(fit_WC)
+```
+
+
+```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+knitr::include_graphics("../figures/weight_length_all_colors.png", dpi = 100)
+```

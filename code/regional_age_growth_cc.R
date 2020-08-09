@@ -467,8 +467,10 @@ overview(fit_WC)
 
 ## plot ------------
 png('./figures/Southeast_all_samples_wholeclamweight_length.png')
-plot(WholeClamWeight_g~Valve.Length.mm,data=dat2_rawWL_whole,ylab="Whole Clam Weight, g",
-     xlab=" Valve Length, mm", pch=19, ylim=c(0,3700), xlim=c(0,220), 
+plot(WholeClamWeight_g~Valve.Length.mm, data=dat2_rawWL_whole, 
+     ylab="Whole Clam Weight, g",
+     xlab=" Valve Length, mm", 
+     pch=19, ylim=c(0,3700), xlim=c(0,220), 
      main="All Southeast samples")
 
 coef2 <- coef(fit_WC)
@@ -481,6 +483,23 @@ for(i in 1:length(length2plot)){
 #adds fitted line
 lines(pred2~length2plot, type="l", col="red", lwd=3, lty=2)
 dev.off()
+
+interWL <- data.frame(length2plot, pred2)
+
+ggplot(dat2_rawWL_whole, aes(Valve.Length.mm,  WholeClamWeight_g)) +
+  #xlim(0, 114) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  #geom_line(data = intervals, aes(x = ages2plot, y = UPI), col = "black", linetype = "dashed") +
+  #geom_line(data = intervals, aes(x = ages2plot, y = LPI), col = "black", linetype = "dashed") + 
+  geom_line(data = interWL, aes(x = length2plot, y = pred2), col = "black") +
+  ylab("Whole Clam Weight (g)") +
+  xlab("Valve Length (mm)")
+ggsave("./figures/weight_length_all_colors.png", width = 1.5*6, height = 5)
+
+
 
 ############## Checking for model assumptions
 # using additive error structure

@@ -314,13 +314,14 @@ par(mfrow=c(1,1))
 png('./figures/Southeast_ALL_samples_VBL1.png')
 fitPlot(fit2, xlab="Age (2012)", ylab="Valve Length (mm)", xlim=range(ages2plot), 
         main="Southeast growth")
-LCI <- UCI <- LPI <- UPI <-numeric(length(ages2plot))
+LCI <- UCI <- LPI <- UPI <- Mavg <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- ests[,"Linf"]*(1-exp(-ests[,"K"]*(ages2plot[i])))
   LCI[i] <-quantile(pv, 0.025)
   UCI[i] <-quantile(pv,0.975)
   LPI[i] <- quantile(pv - boot2$rse, 0.025)
   UPI[i] <- quantile(pv + boot2$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.50)
 }
 #lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 #lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
@@ -630,23 +631,27 @@ ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
 
-png('./figures/present_VBL1.png')
+#png('./figures/present_VBL1.png')
 fitPlot(fit2, xlab="Age (2012)", ylab="Valve Length (mm)", xlim=range(ages2plot), 
         main="Regional Group 2 - outside waters")
-LCI <- UCI <- LPI <- UPI <-numeric(length(ages2plot))
+LCI <- UCI <- LPI <- UPI <- Mavg <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- ests[,"Linf"]*(1-exp(-ests[,"K"]*(ages2plot[i])))
   LCI[i] <-quantile(pv, 0.025)
   UCI[i] <-quantile(pv,0.975)
   LPI[i] <- quantile(pv - boot2$rse, 0.025)
   UPI[i] <- quantile(pv + boot2$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.50)
 }
 #lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 #lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(UPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-lines(LPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2) 
-dev.off()
+#lines(UPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#lines(LPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2) 
+#dev.off()
 #ggsave("./figures/present_VBL.png", dpi=300, height=4.5, width=6.5, units="in")
+
+pres_intervals <- data.frame(ages2plot, LPI, UPI, Mavg)
+# use this in summary plot - after doing it for absent group -- line XXX
 
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
 ### save this graph for RMD !!FIX!!
@@ -903,23 +908,26 @@ ages2plot <- 0:114
 lengths2plot <- 0:204
 par(mfrow=c(1,1))
 
-png('./figures/absent_VBL1.png')
-fitPlot(fit2a, xlab="Age (2012)", ylab="Valve Length (mm)", xlim=range(ages2plot), 
-        main="Regional Group 1 - inside waters")
-LCI <- UCI <- LPI <- UPI <-numeric(length(ages2plot))
+#png('./figures/absent_VBL1.png')
+#fitPlot(fit2a, xlab="Age (2012)", ylab="Valve Length (mm)", xlim=range(ages2plot), 
+#        main="Regional Group 1 - inside waters")
+LCI <- UCI <- LPI <- UPI <- Mavg <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- ests.a[,"Linf"]*(1-exp(-ests.a[,"K"]*(ages2plot[i])))
   LCI[i] <-quantile(pv, 0.025)
   UCI[i] <-quantile(pv,0.975)
   LPI[i] <- quantile(pv - boot2a$rse, 0.025)
   UPI[i] <- quantile(pv + boot2a$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.50)
 }
 #lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 #lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(UPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-lines(LPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-dev.off()
+#lines(UPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#lines(LPI ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#dev.off()
 #ggsave("./figures/present_VBL.png", dpi=300, height=4.5, width=6.5, units="in")
+
+abs_intervals <- data.frame(ages2plot, LPI, UPI, Mavg)
 
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
 ### save this graph for RMD !!FIX!!
@@ -1101,3 +1109,26 @@ for(i in 1:length(ages2plot)){
 lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
 lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
 dev.off()
+
+## BIG PICTURE plots ----------------
+ggplot(dat2_rawL, aes(Age_2012, Valve.Length.mm)) +
+  xlim(0, 114) +
+  ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) + #gray, yellow, blue
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  geom_line(data = intervals, aes(x = ages2plot, y = UPI), col = "black", linetype = "dashed") +
+  geom_line(data = intervals, aes(x = ages2plot, y = LPI), col = "black", linetype = "dashed") + 
+  geom_line(data = intervals, aes(x = ages2plot, y = Mavg), col = "black", size = 1) +
+  xlab("Age (adjusted to 2012)") +
+  ylab("Valve Length (mm)") +
+#geom_line(data = pres_intervals, aes(x = ages2plot, y = UPI), col = "#999999", linetype = "dashed") +
+#  geom_line(data = pres_intervals, aes(x = ages2plot, y = LPI), col = "#999999", linetype = "dashed") + 
+  geom_line(data = pres_intervals, aes(x = ages2plot, y = Mavg), col = "#E69F00", size =1) +
+#geom_line(data = abs_intervals, aes(x = ages2plot, y = UPI), col = "#E69F00", linetype = "dashed") +
+#  geom_line(data = abs_intervals, aes(x = ages2plot, y = LPI), col = "#E69F00", linetype = "dashed") + 
+  geom_line(data = abs_intervals, aes(x = ages2plot, y = Mavg), col = "#999999", size = 1) 
+
+ggsave("./figures/Len_age_all_colors_bootfit_all_FITS.png", width = 1.5*6, height = 5)
+
+

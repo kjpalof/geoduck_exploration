@@ -4,6 +4,7 @@
 # 2018-11-26
 
 # load packages -----
+library(matrixStats)
 library(tidyverse)
 library(reshape2)
 library(scales)
@@ -26,5 +27,7 @@ library(FSA)
 library(weights)
 library(nlstools)
 library(AICcmodavg)
+library(pander)
+library(weights)
 
 #library(SDMTools)

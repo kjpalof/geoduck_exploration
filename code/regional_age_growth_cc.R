@@ -11,7 +11,9 @@
 
 ## Load --------------------------------------------------
 source("./code/helper.r")
-
+theme_set(theme_bw()+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
 ## Load data -------------------------------------------------------
 dat <- read.csv("./data/12_14_geoduck_all.csv")
 weight_pop <- read.csv("./data/GeoduckAgeStudyWeighting.csv")
@@ -133,7 +135,7 @@ present_wt %>% group_by(otter.status, Age_2012) %>% summarise (count = n())
 #### mean age by area -------------
 # use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
 dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, n_wt), 
-               SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
+               SE = (weightedSd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
                MIN = min(Age_2012, na.rm = TRUE), 
                MAX = max(Age_2012, na.rm = TRUE), 
                n = sum(n))
@@ -144,11 +146,13 @@ dat_wt_by.area2 %>% group_by(area) %>% summarise(mean = weighted.mean(Age_2012, 
 
 ################# mean Age by group-------------------------------------------
 # use dat_wt_by.area2  weight mean age by n_corrected or n_wt(weight)
-dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_wt),
-                       SE = (wt.sd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
+dat_wt_by.area2 %>% group_by(waters) %>% summarise(mean = weighted.mean(Age_2012, n_wt),
+                       SE = (weightedSd(Age_2012, n_wt)/(sqrt(sum(!is.na(Age_2012))))), 
                        MIN = min(Age_2012, na.rm = TRUE), 
                        MAX = max(Age_2012, na.rm = TRUE), 
-                       n = sum(n))
+                       n = sum(n)) %>% 
+  write.csv(paste0(here::here(), '/output/sum_by_group.csv'), row.names = FALSE)
+
 # mean weighted by the weighted count (n_wt = n*wt_each)
 dat_wt_by.area2 %>% group_by(otter.status) %>% summarise(mean = weighted.mean(Age_2012, n_corrected))
 # mean weighted by the corrected n (proportion of each age applied to population size)
@@ -228,14 +232,20 @@ dat2 %>% filter(waters == "outside") -> present_raw # also done above but can be
 dat2 %>% filter(waters == "inside") -> absent_raw
 
 ## Southeast Growth  --------------------
-ggplot(dat2, aes(Age_2012, Valve.Length.mm)) +
-  geom_point()
+ggplot(dat2, aes(Age_2012, Valve.Length.mm, group = waters)) + # length /age
+  geom_point(aes(color = waters)) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
 ggplot(dat2, aes(Age_2012, Valve.Weight.g)) +
   geom_point()
-ggplot(dat2, aes(Age_2012, WholeClamWeight_g)) +
-  geom_point()
-ggplot(dat2, aes(Valve.Length.mm, WholeClamWeight_g)) +
-  geom_point()
+ggplot(dat2, aes(Age_2012, WholeClamWeight_g, group = waters)) + # weight / age with whole clam
+  geom_point(aes(color = waters)) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
+ggplot(dat2, aes(Valve.Length.mm, WholeClamWeight_g, group = waters)) + # weight/length
+  geom_point(aes(color = waters)) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
 
 dat2 %>% 
   filter(WholeClamWeight_g <= 5000) -> dat2
@@ -321,6 +331,46 @@ dev.off()
 
 #prediction bounds - add and subtract the RSE - redidual standard error from each bootstrap model
 ### save this graph for RMD !!FIX!!
+ages2plot <- 0:114
+lengths2plot <- 0:204
+LCI <- UCI <- LPI <- UPI <- Mavg <-numeric(length(ages2plot))
+for(i in 1:length(ages2plot)){
+  pv <- ests[,"Linf"]*(1-exp(-ests[,"K"]*(ages2plot[i])))
+  LCI[i] <-quantile(pv, 0.025)
+  UCI[i] <-quantile(pv,0.975)
+  LPI[i] <- quantile(pv - boot2$rse, 0.025)
+  UPI[i] <- quantile(pv + boot2$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.50)
+}
+
+intervals <- data.frame(ages2plot, LPI, UPI, Mavg)
+
+#par(mfrow=c(1,1))
+#png('./figures/Southeast_ALL_samples_VBL1_colored.png')
+ggplot(dat2_rawL, aes(Age_2012, Valve.Length.mm)) +
+  xlim(0, 114) +
+  ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  geom_line(data = intervals, aes(x = ages2plot, y = UPI), col = "black", linetype = "dashed") +
+  geom_line(data = intervals, aes(x = ages2plot, y = LPI), col = "black", linetype = "dashed") + 
+  geom_line(data = intervals, aes(x = ages2plot, y = Mavg), col = "black") +
+  xlab("Age (adjusted to 2012)") +
+  ylab("Valve Length (mm)")
+ggsave("./figures/Len_age_all_colors_bootfit.png", width = 1.5*6, height = 5)
+
+# predicted fit from model plot 
+dat2_rawL$predlm = predict(fit2)
+dat2_rawL %>%
+  ggplot(aes(Age_2012, Valve.Length.mm, group = waters)) +
+  xlim(0, 114) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  geom_line(aes(y = predlm), size = 1)
+
 
 ## other parametrization ----------
 # Galucci and Quinn 1979
@@ -340,6 +390,14 @@ vbFrancis <-vbFuns("Francis")
 fitFrancis <- nls(Valve.Length.mm ~vbFrancis(Age_2012, L1, L2, L3, t1 = ages[1], t3=ages[2]), 
                   data = dat2, start = sv.francis)
 overview(fitFrancis)
+
+## length - age using groups ------------
+vbTypical.t0_G <- Valve.Length.mm~(Linf[waters]*(1-exp(-K[waters]*(Age_2012)))) # the equation to fit
+fit2_G <- nls(vbTypical.t0_G, data=dat2_rawL, start= list(Linf=c(130,130), K=c(0.22,0.22)))
+fitPlot(fit2_G, xlab="Age", ylab="Valve Length (mm)", main="", col.mdl="red") 
+#### ----save this age-length plot 
+fit2_G
+summary(fit2)
 
 
 ## SE weight - length --------------------------------------

@@ -6,16 +6,7 @@ output: word_document
 ---
 
 ```{r, echo=FALSE, message=FALSE, warning=F}
-library(knitr)
-library(tidyverse)
-library(FSA)
-library(gridExtra)
-library(weights)
-library(nlstools)
-library(AICcmodavg)
-library(ggplot2)
-#library(SDMTools)
-library(pander)
+source("../code/helper.r")
 options(scipen=9999) # remove scientific notation
 theme_set(theme_bw()+ 
             theme(panel.grid.major = element_blank(),
@@ -32,6 +23,11 @@ Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_
 knitr::include_graphics("../figures/count_by_area_pres_abs.png", dpi = 100)
 ```
 
-### growth?
+
+```{r, fig.cap = "density histogram of ages for inside and outside waters collections pooled.", out.width= "500px"}
+knitr::include_graphics("../figures/raw_density_pre_abs.png", dpi = 100)
+```
+
+# Growth {-}
 
 

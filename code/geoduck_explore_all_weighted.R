@@ -1,13 +1,13 @@
-#K.Palof 
-# Geoduck age exploration - addressing issues from late 2016/early 2017
+# Work towards RIR for 2020, katie.palof@alaska.gov, 
+# 6-15-2020
+# 
+# Purpose: 
+# original: Geoduck age exploration - addressing issues from late 2016/early 2017
 # see read me for more
 
-rm(list = ls()) # clear workspace since data frames have same names
 
-## Load packages ------
-library(tidyverse)
-library(FSA)
-library(gridExtra)
+## Load ------
+source("./code/helper.r")
 
 ## Load data -------
 dat <- read.csv("./data/12_14_geoduck_all.csv")
@@ -43,7 +43,9 @@ ggplot(dat, aes(x=Age_2012)) +
   geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
                  binwidth=1.0,
                  colour="black", fill="white") +
-  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+  geom_density(alpha=.2, fill="#FF6666")  +
+  # Overlay with transparent density plot
+ggsave("./figures/raw_all_density.png", width = 6.5, height = 5)
 
 ## all on same graph with density - weird ---------
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + 
@@ -58,11 +60,17 @@ ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) +
   geom_histogram(binwidth=1.0, alpha=.5, position="identity")+
   geom_vline(data = sumstats, aes(xintercept = mean, colour = ADFG_Fishery.Area), linetype = "dashed", size =1)
+ggsave("./figures/raw_area_count_mean.png", width = 6.5, height = 5)
 
 # just density plots by area --------------
 ggplot(dat, aes(x=Age_2012, fill=ADFG_Fishery.Area)) + geom_density(alpha=.3)
+ggsave("./figures/raw_area_density_by_collection.png", width = 6.5, height = 5)
+
 # facet wrap by area  ------------
 ggplot(dat, aes(x=Age_2012)) + geom_histogram(binwidth=1.5, colour="black", fill="white") + 
+  facet_grid( ADFG_Fishery.Area~ .)
+
+ggplot(dat, aes(x=Age_2012)) + geom_density(alpha=.3) + 
   facet_grid( ADFG_Fishery.Area~ .)
 
 ## weighting in histogram???---------
@@ -100,17 +108,19 @@ dat_wt_by.area %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area
 wt_all <- ggplot(dat_wt_by.area, aes(x=Age_2012, y = n_wt))  + 
   geom_bar(stat = "identity", width =0.5)
 
-grid.arrange(all, wt_all, nrow=2)
+#grid.arrange(all, wt_all, nrow=2)
 
 
 ############################
 ### sea otter -------------------
-head(dat_wt)
 
-ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) + 
+head(dat_wt_by.area)
+head(dat2)
+
+ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_histogram(binwidth = 1.0, alpha = 0.5, position = "identity") 
 
-ggplot(dat_wt, aes(x=Age_2012, fill=otter.status)) + 
+ggplot(dat2, aes(x=Age_2012, fill=otter.status)) + 
   geom_density(alpha = 0.3) 
   
 head(dat_wt_by.area)

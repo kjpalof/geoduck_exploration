@@ -11,7 +11,7 @@ library(extrafont)
 
 library(grid)
 library(gridExtra)
-library(FNGr)
+#library(FNGr)
 library(scales)
 library(cowplot)
 library(readxl)
@@ -19,7 +19,7 @@ options(scipen=9999) # remove scientific notation
 
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
-theme_set(theme_sleek())
+#theme_set(theme_sleek())
 
 # project specfic ------
 library(FSA)
@@ -27,4 +27,4 @@ library(weights)
 library(nlstools)
 library(AICcmodavg)
 
-library(SDMTools)
+#library(SDMTools)

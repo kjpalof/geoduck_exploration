@@ -17,6 +17,60 @@ knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 
 Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_age_growth_cc.R and regional_catchcurve.R
 
+```{r data load, echo = FALSE, message = FALSE, warning=FALSE}
+## Load data -------------------------------------------------------
+dat <- read.csv("../data/12_14_geoduck_all.csv")
+weight_pop <- read.csv("../data/GeoduckAgeStudyWeighting.csv")
+
+weight_pop %>%  filter(area != "Biorka/Legma Islands") %>% 
+  filter(area != "Taigud/Kolosh Islands") -> weight_pop #remove sitka area since they are grouped under "sitka" now
+weight_pop %>% mutate(wt_each = popsize_wshow/(sum(popsize_wshow))) %>% 
+  select(-AgeStudyWeighting)-> weight_pop
+
+# need to edit data to make sitka one sample - so group Biorka/Legma Islands and Taigud/Kolosh Islands together
+#unique(dat$ADFG_Fishery.Area)
+dat %>% mutate(area1 = as.character(ADFG_Fishery.Area))  %>% 
+        mutate(area = ifelse(area1 == "Biorka/Legma Islands", "Sitka", 
+                             ifelse(area1 == "Taigud/Kolosh Islands", 
+                                    "Sitka", area1))) %>% 
+        select( -area1) -> dat1
+  
+# full data set with weigtings
+dat1 %>% left_join(weight_pop) -> dat2 # raw data
+# summarized by area, age with weigthing
+dat2 %>% group_by(area, Age_2012) %>% 
+  summarise(n = n())  -> dat2_by.area # counts by age for each area 
+dat2_by.area %>% left_join(weight_pop) %>% mutate(n_wt = n*wt_each) -> dat_wt_by.area # counts by age/area with weighting
+
+## weighting counts ------------------
+dat1 %>% group_by(area) %>% summarise(N_samp = n()) ->total.n.area  # number sampled in each area
+dat_wt_by.area %>% left_join(total.n.area) %>% 
+  mutate(prop = n/N_samp, n_corrected = prop*popsize_wshow) -> dat_wt_by.area2
+# n_corrected is counts using population size weighting.  n_wt is proportion using same weighting
+# this is just a scale peference
+
+################ data sets by sea otter ---------------
+dat2 %>% filter(otter.status == "present") -> present_raw
+dat2 %>% filter(otter.status == "absent") -> absent_raw
+dat_wt_by.area2 %>% filter(otter.status == "present") -> present_wt
+dat_wt_by.area2 %>% filter(otter.status == "absent") -> absent_wt
+dat2 %>% 
+  filter(WholeClamWeight_g <= 5000) -> dat2
+```
+
+
+# Regional groupings
+Geoduck age collections were aggregated into regional groupings based on geography, environment, and present of predators (specifically the sea otter).  Group 1 includes the Nakat Inlet, Vallenar Bay, and Vegas/Hotspur Islands, which are all absent of sea otters (total sample size = 611).  Group 2 includes Cone Island North, East San Fernando, Tlevak Strait, Warren/Kosciusko Islands, and Sitka (Biorka and Taigud), which all have sea otters present (total sample size = 1048).  For purposes of this document Group 1 will be referred to as the inside waters group and Group 2 will be outside waters.
+
+## Mean age {-}
+
+```{r, }
+sum_mean_age <- read.csv(paste0(here::here(), '/output/sum_by_group.csv'))
+#sum_mean_age %>% as.data.frame(sum_mean_age) -> sum_mean_age
+panderOptions("digits", 4)
+pander(sum_mean_age)
+```
+
 # Age Histograms {-}
 
 ```{r, fig.cap = "Count histograms for each sampling area, color coded by inside/outside waters.", out.width= "500px"}
@@ -24,10 +78,25 @@ knitr::include_graphics("../figures/count_by_area_pres_abs.png", dpi = 100)
 ```
 
 
-```{r, fig.cap = "density histogram of ages for inside and outside waters collections pooled.", out.width= "500px"}
+```{r, fig.cap = "Density histogram of ages for inside and outside waters collections pooled.", out.width= "500px"}
 knitr::include_graphics("../figures/raw_density_pre_abs.png", dpi = 100)
 ```
 
 # Growth {-}
+
+## Length - age relationship {-}
+
+### All Southeast Alaksa samples combines - length-age {-}
+```{r, }
+dat2 %>% filter(!is.na (Valve.Length.mm)) -> dat2_rawL
+vbTypical.t0 <- Valve.Length.mm~(Linf*(1-exp(-K*(Age_2012)))) # the equation to fit
+fit2 <- nls(vbTypical.t0, data=dat2_rawL, start= list(Linf=142, K=0.58))
+fitPlot(fit2, xlab="Age", ylab="Valve Length (mm)", main="", col.mdl="red") 
+#### ----save this age-length plot 
+#fit2
+summary(fit2)
+
+```
+
 
 

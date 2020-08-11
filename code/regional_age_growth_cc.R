@@ -867,24 +867,42 @@ ages2plot <- 0:120
 #lengths2plot <- 0:204
 
 # plot -------------
-par(mfrow=c(1,1))
+#par(mfrow=c(1,1))
 
-png('./figures/present_WholeCW_age.png')
-fitPlot(fit_WvalB, xlab="Age (2012)", ylab="Whole Clam Weight (g)", 
-        xlim=range(ages2plot),main=" Group 2 outside waters")
-LCIwv <- UCIwv <- LPIwv <- UPIwv <-numeric(length(ages2plot))
+#png('./figures/present_WholeCW_age.png')
+#fitPlot(fit_WvalB, xlab="Age (2012)", ylab="Whole Clam Weight (g)", 
+#        xlim=range(ages2plot),main=" Group 2 outside waters")
+LCIwv <- UCIwv <- LPIwv <- UPIwv <- Mavg <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- estsWVp[,"Winf"]*(1-exp(-estsWVp[,"K"]*(ages2plot[i])))^2.71
   LCIwv[i] <-quantile(pv, 0.025)
   UCIwv[i] <-quantile(pv,0.975)
   LPIwv[i] <- quantile(pv - boot_WvalB$rse, 0.025)
   UPIwv[i] <- quantile(pv + boot_WvalB$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.5)
 }
 #lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 #lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-dev.off()
+#lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#dev.off()
+
+intervals_WA_p <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
+
+ggplot(present_rawWL_whole, aes(Age_2012, WholeClamWeight_g)) +
+  xlim(0, 120) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = UPIwv), col = "black", linetype = "dashed") +
+  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = LPIwv), col = "black", linetype = "dashed") + 
+  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = Mavg), col = "black") +
+  xlab("Age (adjusted to 2012)") +
+  ylab("Whole Clam Weight (g)")
+ggsave("./figures/present_WholeCW_age2.png", width = 1.5*6, height = 5)
+
+
 
 
 ### Absent  group growth -------------------------------
@@ -1140,25 +1158,42 @@ estsWVa <-boot_WvalB.a$coefboot
 ages2plot <- 0:120
 #lengths2plot <- 0:204
 
-par(mfrow=c(1,1))
+#par(mfrow=c(1,1))
 
 ## plot ------------
-png('./figures/absent_wholeClam_Wlength.png')
-fitPlot(fit_WvalB.a, xlab="Age (2012)", ylab="Whole Clam Weight (g)",
-        xlim=range(ages2plot),main=" Group 1 inside waters")
-LCIwv <- UCIwv <- LPIwv <- UPIwv <-numeric(length(ages2plot))
+#png('./figures/absent_wholeClam_Wlength.png')
+#fitPlot(fit_WvalB.a, xlab="Age (2012)", ylab="Whole Clam Weight (g)",
+#        xlim=range(ages2plot),main=" Group 1 inside waters")
+LCIwv <- UCIwv <- LPIwv <- UPIwv <- Mavg <-numeric(length(ages2plot))
 for(i in 1:length(ages2plot)){
   pv <- estsWVa[,"Winf"]*(1-exp(-estsWVa[,"K"]*(ages2plot[i])))^1.84
   LCIwv[i] <-quantile(pv, 0.025)
   UCIwv[i] <-quantile(pv,0.975)
   LPIwv[i] <- quantile(pv - boot_WvalB.a$rse, 0.025)
   UPIwv[i] <- quantile(pv + boot_WvalB.a$rse, 0.975)
+  Mavg[i] <- quantile(pv, 0.5)
 }
 #lines(UCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
 #lines(LCI~ages2plot, type="l", col="blue", lwd=2, lty=2)
-lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
-dev.off()
+#lines(UPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#lines(LPIwv ~ ages2plot, type ="l", col = "red", lwd=2, lty = 2)
+#dev.off()
+
+intervals_WA_a <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
+
+ggplot(absent_rawWL_whole, aes(Age_2012, WholeClamWeight_g)) +
+  xlim(0, 120) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#E69F00", "#56B4E9")) +
+  geom_line(data = intervals_WA_a, aes(x = ages2plot, y = UPIwv), col = "black", linetype = "dashed") +
+  geom_line(data = intervals_WA_a, aes(x = ages2plot, y = LPIwv), col = "black", linetype = "dashed") + 
+  geom_line(data = intervals_WA_a, aes(x = ages2plot, y = Mavg), col = "black") +
+  xlab("Age (adjusted to 2012)") +
+  ylab("Whole Clam Weight (g)")
+ggsave("./figures/absent_WholeCW_age2.png", width = 1.5*6, height = 5)
+
 
 ## BIG PICTURE plots ----------------
 ggplot(dat2_rawL, aes(Age_2012, Valve.Length.mm)) +
@@ -1206,3 +1241,23 @@ ggplot(dat2_rawWL_whole, aes(Valve.Length.mm,  WholeClamWeight_g)) +
   ylab("Whole Clam Weight (g)") +
   xlab("Valve Length (mm)")
 ggsave("./figures/weight_length_all_3_relationships.png", width = 1.5*6, height = 5)
+
+
+## weight-age -----------
+# line 591 above
+#intervals_WA <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
+#intervals_WA_p <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
+
+ggplot(dat2_rawWL_whole, aes(Age_2012, WholeClamWeight_g)) +
+  xlim(0, 120) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  geom_line(data = intervals_WA, aes(x = ages2plot, y = UPIwv), col = "black", linetype = "dashed") +
+  geom_line(data = intervals_WA, aes(x = ages2plot, y = LPIwv), col = "black", linetype = "dashed") + 
+  geom_line(data = intervals_WA, aes(x = ages2plot, y = Mavg), col = "black") +
+  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = Mavg), col = "#999999") +
+  xlab("Age (adjusted to 2012)") +
+  ylab("Whole Clam Weight (g)")
+ggsave("./figures/Weight_age_all_3_relationships.png", width = 1.5*6, height = 5)

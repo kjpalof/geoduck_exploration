@@ -186,6 +186,10 @@ summary(fit_WvalB.a) ## need to save this for .RMD
 #overview(fit_WvalB.a)# output from the fitted object
 ```
 
+```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+knitr::include_graphics("../figures/Weight_age_all_3_relationships.png", dpi = 100)
+```
+
 ## Weight - length relationship {-}
 
 ### All Southeast Alaksa samples combines - weight-length {-}

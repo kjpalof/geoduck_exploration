@@ -168,6 +168,43 @@ summary(fit_WC)
 ```
 
 
-```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+```{r, fig.cap = "Weight-length relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
 knitr::include_graphics("../figures/weight_length_all_colors.png", dpi = 100)
+```
+
+### Outside waters {-}
+
+```{r, }
+present_raw %>% filter(!is.na (Valve.Length.mm)) -> present_rawL # needed to remove rows without length measurements
+# input file for whole clam weight 
+present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
+wlallo2 <- WholeClamWeight_g ~ (A)*(Valve.Length.mm^B)
+fit_WC <- nls(wlallo2, data=present_rawWL_whole, start=list(A=0.01, B=1.8))#A=0.01, B=1.8
+
+#fitPlot(fit_WC, xlab="Valve Length", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+#fit_WC
+summary(fit_WC)
+#overview(fit_WC)
+
+```
+
+### Inside water {-}
+
+```{r, }
+absent_raw %>% filter(!is.na (Valve.Length.mm)) -> absent_rawL # needed to remove rows without length measurements
+# input file for whole clam weight 
+absent_rawL %>% filter(!is.na (WholeClamWeight_g)) -> absent_rawWL_whole
+absent_rawWL_whole %>% filter(WholeClamWeight_g < 4000) ->absent_rawWL_whole
+
+wlallo2 <- WholeClamWeight_g ~ (A)*(Valve.Length.mm^B)
+fit_WC.a <- nls(wlallo2, data=absent_rawWL_whole, start=list(A=0.01, B=1.8))#A=0.01, B=1.8
+#fitPlot(fit_WC.a, xlab="Valve Length", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+#fit_WC.a
+summary(fit_WC.a)
+#overview(fit_WC.a)
+
+```
+
+```{r, fig.cap = "Weight-length relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+knitr::include_graphics("../figures/weight_length_all_3_relationships.png", dpi = 100)
 ```

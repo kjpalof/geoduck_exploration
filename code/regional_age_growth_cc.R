@@ -98,6 +98,15 @@ ggsave("./figures/raw_count_pre_abs_facet.png", width = 6.5, height = 5)
 
 ## histograms --------
 head(dat2)
+
+## all of southeast histo---------
+ggplot(dat2, aes(Age_2012)) + 
+  geom_histogram(binwidth = 0.95, alpha = 0.5, position = "dodge", 
+                 color = "#56B4E9", fill = "#56B4E9") +
+  scale_color_manual(values=c("#56B4E9"))+
+  scale_fill_manual(values=c("#56B4E9")) +
+  xlab("Age (scaled to 2012 year class)") 
+ggsave("./figures/count_histo_all_samples.png", width = 6.5, height = 5)
 # all areas unweighted
 dat2 %>% mutate(Area = as.factor(area)) ->dat2
 levels(dat2$Area) <- c("B/L Is", "CIN", "ESF", "NI", "T/K Is", "TS", "VB", "V/H Is", "W/K Is")
@@ -107,7 +116,7 @@ ggplot(dat2, aes(Age_2012, fill = waters)) +
   scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
   xlab("Age (scaled to 2012 year class)") +
   facet_grid( Area ~.)
-ggsave("./figures/count_by_area_pres_abs.png", width = 6.5, height = 5)
+ggsave("./figures/count_by_area_pres_abs.png", width = 6.5, height = 8)
 
 ggplot(dat2, aes(Age_2012, fill = waters)) + 
   geom_density(alpha = 0.3) +

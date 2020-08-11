@@ -153,6 +153,39 @@ summary(fit_WvalB) ## need to save this for .RMD
 knitr::include_graphics("../figures/Weight_age_all_colors_bootfit.png", dpi = 100)
 ```
 
+### Outside waters {-}
+
+```{r, }
+present_raw %>% filter(!is.na (Valve.Length.mm)) -> present_rawL # needed to remove rows without length measurements
+# input file for whole clam weight 
+present_rawL %>% filter(!is.na (WholeClamWeight_g)) -> present_rawWL_whole
+
+vbTypical_WVB <- WholeClamWeight_g~(Winf*(1-exp(-K*(Age_2012)))^2.71)
+fit_WvalB <- nls(vbTypical_WVB, data=present_rawWL_whole, start= list(Winf=150, K=0.05))
+#fitPlot(fit_WvalB, xlab="Age", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+
+#fit_WvalB
+summary(fit_WvalB) ## need to save this for .RMD
+#overview(fit_WvalB)#
+```
+
+### Inside water {-}
+
+```{r, }
+absent_raw %>% filter(!is.na (Valve.Length.mm)) -> absent_rawL # needed to remove rows without length measurements
+# input file for whole clam weight 
+absent_rawL %>% filter(!is.na (WholeClamWeight_g)) -> absent_rawWL_whole
+absent_rawWL_whole %>% filter(WholeClamWeight_g < 4000) ->absent_rawWL_whole
+
+vbTypical_WVB.a <- WholeClamWeight_g~(Winf*(1-exp(-K*(Age_2012)))^1.84)
+fit_WvalB.a <- nls(vbTypical_WVB.a, data=absent_rawWL_whole, start= list(Winf=1500, K=0.05))
+#fitPlot(fit_WvalB.a, xlab="Age", ylab="Whole Clam Weight (g)", main="", col.mdl="red")
+
+#fit_WvalB.a
+summary(fit_WvalB.a) ## need to save this for .RMD
+#overview(fit_WvalB.a)# output from the fitted object
+```
+
 ## Weight - length relationship {-}
 
 ### All Southeast Alaksa samples combines - weight-length {-}

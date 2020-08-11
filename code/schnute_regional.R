@@ -8,13 +8,23 @@
 # only have to install packages once
 # needs an older versino of R.  Running v.3.1.3
 
+#devtools::install_github("pbs-software/pbs-tools")
+
 ######
-install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBStools_1.24.20.zip", repos = NULL)
-install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBSdata_1.22.10.zip", repos = NULL)
-install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBSfishery_1.20.105.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/PBStools_1.39.4.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/PBSdata_1.27.0.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/PBSmodelling_2.68.8.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/PBSmapping_2.72.1.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/XML_3.99-0.3.zip", repos = NULL)
+install.packages("C:/Users/kjpalof/Documents/R/RODBC_1.3-16.zip", repos = NULL)
+
+#install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBStools_1.24.20.zip", repos = NULL)
+#install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBSdata_1.22.10.zip", repos = NULL)
+#install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBSfishery_1.20.105.zip", repos = NULL)
+#install.packages("C:/Users/kjpalof/Documents/R/win-library/3.3/PBSfishery_1.20.105.zip", repos = NULL)
 #install.packages("H:/R/win-library/3.0/PBStools_1.24.20.zip")
 #install.packages("C:/Users/kjpalof/Documents/R/win-library/3.2/PBStools_1.24.20.zip")
-install.packages("RODBC")
+#install.packages("RODBC")
 install.packages("BRugs")
 install.packages("PBSfishery") # Need to run this using an old version of R.  
 #####
@@ -23,10 +33,13 @@ library(PBStools)
 library(PBSdata)
 library(PBSmapping)
 library(PBSmodelling)
+library(XML)
 library(PBSfishery) # built before R 3.0.0, switched to v. 3.1.3
 #need to have OpenBugs 3.2.2 installed
 library(BRugs)
+library(RODBC)
 
+ ## need to install OpenBugs
 # Example
 #####
 data(nage394)

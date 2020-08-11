@@ -1,5 +1,5 @@
 ---
-title: "geoduck aging data analysis"
+title: "Geoduck age project data analysis"
 author: "Katie Palof"
 date: "8/9/2020"
 output: word_document
@@ -16,6 +16,8 @@ knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 ```
 
 Housekeeping/ long-term: code is in geoduck_exploration R project. See regional_age_growth_cc.R and regional_catchcurve.R
+https://github.com/kjpalof/geoduck_exploration
+
 
 ```{r data load, echo = FALSE, message = FALSE, warning=FALSE}
 ## Load data -------------------------------------------------------
@@ -186,7 +188,7 @@ summary(fit_WvalB.a) ## need to save this for .RMD
 #overview(fit_WvalB.a)# output from the fitted object
 ```
 
-```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+```{r, fig.cap = "Weight-age relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings. Model fit cooresponds to grouping color (solid line), bootstrap lines (dashed) only shown for all of Southeast", out.width= "500px"}
 knitr::include_graphics("../figures/Weight_age_all_3_relationships.png", dpi = 100)
 ```
 
@@ -242,6 +244,6 @@ summary(fit_WC.a)
 
 ```
 
-```{r, fig.cap = "Weight-length relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings", out.width= "500px"}
+```{r, fig.cap = "Weight-length relatioship for all Southeast Alaska samples, color coded by inside/outside waters groupings. Model fit cooresponds to grouping color (solid line).", out.width= "500px"}
 knitr::include_graphics("../figures/weight_length_all_3_relationships.png", dpi = 100)
 ```

@@ -1247,6 +1247,7 @@ ggsave("./figures/weight_length_all_3_relationships.png", width = 1.5*6, height 
 # line 591 above
 #intervals_WA <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
 #intervals_WA_p <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
+#intervals_WA_a <- data.frame(ages2plot, LPIwv, UPIwv, Mavg)
 
 ggplot(dat2_rawWL_whole, aes(Age_2012, WholeClamWeight_g)) +
   xlim(0, 120) +
@@ -1257,7 +1258,10 @@ ggplot(dat2_rawWL_whole, aes(Age_2012, WholeClamWeight_g)) +
   geom_line(data = intervals_WA, aes(x = ages2plot, y = UPIwv), col = "black", linetype = "dashed") +
   geom_line(data = intervals_WA, aes(x = ages2plot, y = LPIwv), col = "black", linetype = "dashed") + 
   geom_line(data = intervals_WA, aes(x = ages2plot, y = Mavg), col = "black") +
-  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = Mavg), col = "#999999") +
+  geom_line(data = intervals_WA_p, aes(x = ages2plot, y = Mavg), col = "#999999", 
+            size = 1) +
+  geom_line(data = intervals_WA_a, aes(x = ages2plot, y = Mavg), col = "#E69F00", 
+            size = 1) +
   xlab("Age (adjusted to 2012)") +
   ylab("Whole Clam Weight (g)")
 ggsave("./figures/Weight_age_all_3_relationships.png", width = 1.5*6, height = 5)

@@ -503,7 +503,8 @@ ggplot(dat2_rawWL_whole, aes(Valve.Length.mm,  WholeClamWeight_g)) +
   scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
   #geom_line(data = intervals, aes(x = ages2plot, y = UPI), col = "black", linetype = "dashed") +
   #geom_line(data = intervals, aes(x = ages2plot, y = LPI), col = "black", linetype = "dashed") + 
-  geom_line(data = interWL, aes(x = length2plot, y = pred2), col = "black") +
+  geom_line(data = interWL, aes(x = length2plot, y = pred2), col = "black", 
+            size = 1) +
   ylab("Whole Clam Weight (g)") +
   xlab("Valve Length (mm)")
 ggsave("./figures/weight_length_all_colors.png", width = 1.5*6, height = 5)
@@ -806,6 +807,7 @@ for(i in 1:length(length2plot)){
 lines(pred2~length2plot, type="l", col="red", lwd=3, lty=2)
 dev.off()
 
+interWL_pres <- data.frame(length2plot, pred2)
 ############## Checking for model assumptions
 # using additive error structure
 residPlot(fit_WC)
@@ -1082,6 +1084,7 @@ for(i in 1:length(length2plot)){
 lines(pred2~length2plot, type="l", col="red", lwd=3, lty=2)
 dev.off()
 
+interWL_abs <- data.frame(length2plot, pred2)
 ############## Checking for model assumptions
 # using additive error structure
 residPlot(fit_WC.a)
@@ -1179,3 +1182,27 @@ ggplot(dat2_rawL, aes(Age_2012, Valve.Length.mm)) +
 ggsave("./figures/Len_age_all_colors_bootfit_all_FITS.png", width = 1.5*6, height = 5)
 
 
+### weight - length ------
+# see line 498 above 
+#interWL <- data.frame(length2plot, pred2)
+
+interWL_pres
+interWL_abs
+
+ggplot(dat2_rawWL_whole, aes(Valve.Length.mm,  WholeClamWeight_g)) +
+  #xlim(0, 114) +
+  #ylim(0, 204) +
+  geom_point(aes(color = waters)) + 
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+  #geom_line(data = intervals, aes(x = ages2plot, y = UPI), col = "black", linetype = "dashed") +
+  #geom_line(data = intervals, aes(x = ages2plot, y = LPI), col = "black", linetype = "dashed") + 
+  geom_line(data = interWL, aes(x = length2plot, y = pred2), col = "black", 
+            size = 1) +
+  geom_line(data = interWL_pres, aes(x = length2plot, y = pred2), col = "#E69F00", 
+            size =1) +
+  geom_line(data = interWL_abs, aes(x = length2plot, y = pred2), col = "#999999", 
+            size =1) +
+  ylab("Whole Clam Weight (g)") +
+  xlab("Valve Length (mm)")
+ggsave("./figures/weight_length_all_3_relationships.png", width = 1.5*6, height = 5)

@@ -77,6 +77,9 @@ pander(sum_mean_age)
 knitr::include_graphics("../figures/count_by_area_pres_abs.png", dpi = 100)
 ```
 
+```{r, fig.cap = "Count histogram, color coded by inside/outside waters.", out.width= "500px"}
+knitr::include_graphics("../figures/raw_count_pre_abs.png", dpi = 100)
+```
 
 ```{r, fig.cap = "Density histogram of ages for inside and outside waters collections pooled.", out.width= "500px"}
 knitr::include_graphics("../figures/raw_density_pre_abs.png", dpi = 100)
